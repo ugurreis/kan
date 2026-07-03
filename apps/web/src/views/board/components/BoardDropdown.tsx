@@ -44,29 +44,29 @@ export default function BoardDropdown({
       void utils.board.byId.invalidate();
       if (variables.isArchived !== undefined) {
         showPopup({
-          header: variables.isArchived ? t`Board archived` : t`Board unarchived`,
+          header: variables.isArchived ? t`Pano arşivlendi` : t`Pano arşivden çıkarıldı`,
           message: variables.isArchived
-            ? t`The board has been archived.`
-            : t`The board has been unarchived.`,
+            ? t`Pano arşivlendi.`
+            : t`Pano arşivden çıkarıldı.`,
           icon: "success",
         });
         void router.push(`/boards`);
       } else if (variables.favorite !== undefined) {
         showPopup({
           header: variables.favorite
-            ? t`Added to favorites`
-            : t`Removed from favorites`,
+            ? t`Favorilere eklendi`
+            : t`Favorilerden kaldırıldı`,
           message: variables.favorite
-            ? t`${boardName ?? "Board"} has been added to your favorites.`
-            : t`${boardName ?? "Board"} has been removed from your favorites.`,
+            ? t`${boardName ?? "Pano"} favorilerinize eklendi.`
+            : t`${boardName ?? "Pano"} favorilerinizden kaldırıldı.`,
           icon: "success",
         });
       }
     },
     onError: () => {
       showPopup({
-        header: t`Unable to update board`,
-        message: t`Please try again later, or contact customer support.`,
+        header: t`Pano güncellenemedi`,
+        message: t`Lütfen daha sonra tekrar deneyin.`,
         icon: "error",
       });
     },
@@ -92,7 +92,7 @@ export default function BoardDropdown({
     ...(!isTemplate && canCreateBoard
       ? [
         {
-          label: t`Make template`,
+          label: t`Şablon yap`,
           action: () => openModal("CREATE_TEMPLATE"),
           icon: (
             <HiOutlineDocumentDuplicate className="h-[16px] w-[16px] text-dark-900" />
@@ -103,7 +103,7 @@ export default function BoardDropdown({
     ...(!isTemplate && canEditBoard
       ? [
         {
-          label: t`Edit board URL`,
+          label: t`Pano bağlantısını düzenle`,
           action: () => openModal("UPDATE_BOARD_SLUG"),
           icon: <HiLink className="h-[16px] w-[16px] text-dark-900" />,
         },
@@ -112,7 +112,7 @@ export default function BoardDropdown({
     ...(!isTemplate && canArchiveBoard
       ? [
         {
-          label: isArchived ? t`Unarchive board` : t`Archive board`,
+          label: isArchived ? t`Arşivden çıkar` : t`Panoyu arşivle`,
           action: handleArchiveOrUnarchive,
           icon: (
             <IoArchiveOutline className="h-[16px] w-[16px] text-dark-900" />
@@ -123,7 +123,7 @@ export default function BoardDropdown({
     ...(!isTemplate && canEditBoard
       ? [
         {
-          label: t`Move to workspace`,
+          label: t`Çalışma alanına taşı`,
           action: () => openModal("MOVE_BOARD"),
           icon: (
             <HiArrowRightOnRectangle className="h-[16px] w-[16px] text-dark-900" />
@@ -133,8 +133,8 @@ export default function BoardDropdown({
       : []),
     {
       label: isFavorite
-        ? t`Remove from favorites`
-        : t`Add to favorites`,
+        ? t`Favorilerden kaldır`
+        : t`Favorilere ekle`,
       action: handleToggleFavorite,
       icon: isFavorite ? (
         <HiStar className="h-[16px] w-[16px] text-dark-900" />
@@ -145,7 +145,7 @@ export default function BoardDropdown({
     ...(canDeleteBoard
       ? [
         {
-          label: isTemplate ? t`Delete template` : t`Delete board`,
+          label: isTemplate ? t`Şablonu sil` : t`Panoyu sil`,
           action: () => openModal("DELETE_BOARD"),
           icon: (
             <HiOutlineTrash className="h-[16px] w-[16px] text-dark-900" />

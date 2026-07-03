@@ -19,8 +19,8 @@ import TemplateBoards from "./TemplateBoards";
 const schema = z.object({
   name: z
     .string()
-    .min(1, { message: t`Board name is required` })
-    .max(100, { message: t`Board name cannot exceed 100 characters` }),
+    .min(1, { message: t`Pano adı zorunludur` })
+    .max(100, { message: t`Pano adı 100 karakteri geçemez` }),
   workspacePublicId: z.string(),
   template: z.custom<Template | null>(),
 });
@@ -89,8 +89,8 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
     },
     onError: () => {
       showPopup({
-        header: t`Error`,
-        message: t`Failed to create board`,
+        header: t`Hata`,
+        message: t`Pano oluşturulamadı`,
         icon: "error",
       });
     },
@@ -117,7 +117,7 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="px-5 pt-5">
         <div className="text-neutral-9000 flex w-full items-center justify-between pb-4 dark:text-dark-1000">
-          <h2 className="text-sm font-bold">{t`New ${isTemplate ? "template" : "board"}`}</h2>
+          <h2 className="text-sm font-bold">{isTemplate ? t`Yeni şablon` : t`Yeni pano`}</h2>
           <button
             type="button"
             className="hover:bg-li ght-300 rounded p-1 focus:outline-none dark:hover:bg-dark-300"
@@ -131,7 +131,7 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
         </div>
         <Input
           id="name"
-          placeholder={t`Name`}
+          placeholder={t`Ad`}
           {...register("name", { required: true })}
           errorMessage={errors.name?.message}
           onKeyDown={async (e) => {
@@ -151,7 +151,7 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
       <div className="mt-12 flex items-center justify-end space-x-4 border-t border-light-600 px-5 pb-5 pt-5 dark:border-dark-600">
         {!isTemplate && (
           <Toggle
-            label={t`Use template`}
+            label={t`Şablon kullan`}
             isChecked={showTemplates}
             onChange={() => {
               setShowTemplates(!showTemplates);
@@ -163,7 +163,7 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
         )}
         <div>
           <Button type="submit" isLoading={createBoard.isPending}>
-            {t`Create ${isTemplate ? "template" : "board"}`}
+            {isTemplate ? t`Şablon oluştur` : t`Pano oluştur`}
           </Button>
         </div>
       </div>

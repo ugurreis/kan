@@ -1,5 +1,3 @@
-import { useTheme } from "next-themes";
-
 import { authClient } from "@kan/auth/client";
 
 import PatternedBackground from "~/components/PatternedBackground";
@@ -7,21 +5,23 @@ import Footer from "./Footer";
 import Header from "./Header";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { resolvedTheme } = useTheme();
-
   const { data: session } = authClient.useSession();
 
   const isLoggedIn = !!session?.user;
 
-  const isDarkMode = resolvedTheme === "dark";
-
   return (
     <>
+      {/* Arka plan rengi tema sınıfına (.dark) göre statik CSS ile verilir;
+          resolvedTheme'i SSR'da JS ile enjekte etmek hydration uyumsuzluğu
+          (styled-jsx hash farkı) yaratıyordu. */}
       <style jsx global>{`
         html {
           scroll-behavior: smooth;
           overflow: auto;
-          background-color: ${!isDarkMode ? "hsl(0deg 0% 97.3%)" : "#161616"};
+          background-color: hsl(0deg 0% 97.3%);
+        }
+        html.dark {
+          background-color: #161616;
         }
       `}</style>
       <div className="mx-auto flex h-full min-h-screen min-w-[375px] flex-col items-center bg-light-100 dark:bg-dark-50">

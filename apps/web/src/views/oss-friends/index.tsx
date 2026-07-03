@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import Button from "~/components/Button";
 import { PageHead } from "~/components/PageHead";
+import { BRAND_TITLE_SUFFIX } from "~/lib/brand";
 import Layout from "../home/components/Layout";
 
 interface OSSFriend {
@@ -49,7 +50,7 @@ export default function OSSFriendsView() {
 
   return (
     <Layout>
-      <PageHead title={`${t`OSS Friends`} | kan.bn`} />
+      <PageHead title={`${t`OSS Friends`} | ${BRAND_TITLE_SUFFIX}`} />
 
       <div className="flex h-full w-full flex-col lg:pt-[5rem]">
         <div className="w-full pb-10 pt-32">

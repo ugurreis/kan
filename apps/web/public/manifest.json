@@ -31,9 +31,9 @@
     }
   ],
   "orientation": "portrait-primary",
-  "name": "KanbanTR",
+  "name": "Nexora",
   "scope": "/",
-  "short_name": "KanbanTR",
+  "short_name": "Nexora",
   "start_url": "/",
   "theme_color": "#10b981"
 }

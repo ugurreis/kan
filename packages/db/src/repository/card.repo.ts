@@ -204,6 +204,9 @@ export const update = async (
     title?: string;
     description?: string;
     dueDate?: Date | null;
+    completed?: boolean;
+    completedAt?: Date | null;
+    completedBy?: string | null;
   },
   args: {
     cardPublicId: string;
@@ -215,6 +218,12 @@ export const update = async (
       title: cardInput.title,
       description: cardInput.description,
       dueDate: cardInput.dueDate !== undefined ? cardInput.dueDate : undefined,
+      completed:
+        cardInput.completed !== undefined ? cardInput.completed : undefined,
+      completedAt:
+        cardInput.completedAt !== undefined ? cardInput.completedAt : undefined,
+      completedBy:
+        cardInput.completedBy !== undefined ? cardInput.completedBy : undefined,
       updatedAt: new Date(),
     })
     .where(and(eq(cards.publicId, args.cardPublicId), isNull(cards.deletedAt)))
@@ -224,6 +233,7 @@ export const update = async (
       title: cards.title,
       description: cards.description,
       dueDate: cards.dueDate,
+      completed: cards.completed,
     });
 
   return result;
@@ -259,6 +269,7 @@ export const getByPublicId = (db: dbClient, cardPublicId: string) => {
       description: true,
       listId: true,
       dueDate: true,
+      completed: true,
     },
     with: {
       list: {
@@ -491,6 +502,9 @@ export const getWithListAndMembersByPublicId = async (
       createdBy: true,
       cardNumber: true,
       index: true,
+      completed: true,
+      completedAt: true,
+      completedBy: true,
     },
     with: {
       labels: {

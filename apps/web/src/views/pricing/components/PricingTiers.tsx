@@ -4,6 +4,8 @@ import { t } from "@lingui/core/macro";
 import { HiBolt, HiCheckCircle } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
 
+import { BRAND_CONTACT_EMAIL } from "~/lib/brand";
+
 type FrequencyValue = "monthly" | "annually";
 
 interface Frequency {
@@ -91,7 +93,7 @@ const Pricing = ({
     {
       name: t`Enterprise`,
       id: "tier-enterprise",
-      href: "mailto:support@kan.bn?subject=Enterprise Inquiry",
+      href: `mailto:${BRAND_CONTACT_EMAIL}?subject=Kurumsal Talep`,
       buttonText: t`Contact Sales`,
       price: { monthly: t`Contact us`, annually: t`Contact us` },
       description: t`Advanced security, compliance, and dedicated support for large organizations.`,

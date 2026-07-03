@@ -1,19 +1,16 @@
 import { t } from "@lingui/core/macro";
-import { useTheme } from "next-themes";
 import { useState } from "react";
 
-import Button from "~/components/Button";
 import { PageHead } from "~/components/PageHead";
+import { BRAND_TITLE_SUFFIX } from "~/lib/brand";
 import Cta from "../home/components/Cta";
 import Layout from "../home/components/Layout";
-import Logos from "../home/components/Logos";
 import FeatureComparisonTable from "./components/FeatureComparisonTable";
 import PricingTiers from "./components/PricingTiers";
 
 type FrequencyValue = "monthly" | "annually";
 
 export default function PricingView() {
-  const { resolvedTheme } = useTheme();
   const frequencies = [
     {
       value: "monthly" as FrequencyValue,
@@ -31,7 +28,7 @@ export default function PricingView() {
 
   return (
     <Layout>
-      <PageHead title={`${t`Pricing`} | kan.bn`} />
+      <PageHead title={`${t`Pricing`} | ${BRAND_TITLE_SUFFIX}`} />
 
       <div className="flex h-full w-full flex-col lg:pt-[5rem]">
         <div className="w-full pb-10 pt-32">
@@ -54,10 +51,6 @@ export default function PricingView() {
           />
         </div>
 
-        <div className="pb-20">
-          <Logos />
-        </div>
-
         <div className="pb-22 flex flex-col items-center justify-center px-4">
         
 
@@ -68,7 +61,7 @@ export default function PricingView() {
           </div>
         </div>
         <div className="relative">
-          <Cta theme={resolvedTheme ?? "light"} />
+          <Cta />
         </div>
       </div>
     </Layout>

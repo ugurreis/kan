@@ -4,20 +4,20 @@ import { useEffect, useState } from "react";
 
 import Button from "~/components/Button";
 
-const Cta = ({ theme }: { theme: string }) => {
-  const [currentWorkspaceSlug, setCurrentWorkspaceSlug] = useState("acme");
+const Cta = () => {
+  const [currentWorkspaceSlug, setCurrentWorkspaceSlug] = useState("pazarlama");
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const workspaceSlugs = [
-      "acme",
-      "henry",
-      "cal",
-      "documenso",
-      "jack",
-      "openstatus",
-      "florrie",
-      "supabase",
+      "pazarlama",
+      "yazilim",
+      "tasarim",
+      "satis",
+      "operasyon",
+      "urun",
+      "destek",
+      "ik",
     ];
 
     const interval = setInterval(() => {
@@ -48,17 +48,17 @@ const Cta = ({ theme }: { theme: string }) => {
                 : "-translate-y-4 opacity-0"
             }`}
           >
-            <p>kan.bn/{currentWorkspaceSlug}</p>
+            <p>{currentWorkspaceSlug}</p>
           </div>
           <h2 className="text-balance text-4xl font-bold tracking-tight text-light-1000 dark:text-dark-1000 sm:text-4xl">
-            {t`Get started for free today`}
+            {t`Ekibinizi bugün taşıyın`}
           </h2>
           <p className="text-md/8 mx-auto mt-6 max-w-[375px] text-pretty text-light-950 dark:text-dark-900">
-            {t`Unlimited boards, unlimited lists, unlimited cards. No credit card required.`}
+            {t`Sınırsız pano, sınırsız liste, sınırsız kart. Sade ve tamamen Türkçe.`}
           </p>
           <Link href="/signup">
             <div className="mt-10 flex items-center justify-center gap-x-6">
-              <Button size="lg">{t`Get started`}</Button>
+              <Button size="lg">{t`Hemen başla`}</Button>
             </div>
           </Link>
         </div>
@@ -77,13 +77,8 @@ const Cta = ({ theme }: { theme: string }) => {
         />
         <defs>
           <radialGradient id="8d958450-c69f-4251-94bc-4e091a323369">
-            <stop
-              stopColor={theme === "light" ? "hsl(0deg 0% 52.2%)" : "#505050"}
-            />
-            <stop
-              offset={1}
-              stopColor={theme === "light" ? "hsl(0deg 0% 43.5%)" : "#707070"}
-            />
+            <stop stopColor="#585858" />
+            <stop offset={1} stopColor="#787878" />
           </radialGradient>
         </defs>
       </svg>

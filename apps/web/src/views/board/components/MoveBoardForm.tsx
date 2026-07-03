@@ -31,7 +31,7 @@ export function MoveBoardForm({
       closeModal();
       showPopup({
         header: t`Board moved`,
-        message: t`The board has been moved to ${targetWorkspace?.name ?? "the workspace"}.`,
+        message: t`Pano ${targetWorkspace?.name ?? "çalışma alanı"} çalışma alanına taşındı.`,
         icon: "success",
       });
       if (targetWorkspace) {

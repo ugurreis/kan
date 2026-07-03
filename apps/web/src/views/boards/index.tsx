@@ -18,6 +18,7 @@ import { usePermissions } from "~/hooks/usePermissions";
 import { useKeyboardShortcut } from "~/providers/keyboard-shortcuts";
 import { useModal } from "~/providers/modal";
 import { useWorkspace } from "~/providers/workspace";
+import { DeleteBoardConfirmation } from "../board/components/DeleteBoardConfirmation";
 import { BoardsList } from "./components/BoardsList";
 import { ImportBoardsForm } from "./components/ImportBoardsForm";
 import { NewBoardForm } from "./components/NewBoardForm";
@@ -28,7 +29,7 @@ const boardsTabs = [
 ];
 
 export default function BoardsPage({ isTemplate }: { isTemplate?: boolean }) {
-  const { openModal, modalContentType, isOpen } = useModal();
+  const { openModal, modalContentType, isOpen, entityId } = useModal();
   const { workspace } = useWorkspace();
   const [activeTab, setActiveTab] = useState<"boards" | "archived">("boards");
   const { canCreateBoard } = usePermissions();
@@ -38,19 +39,19 @@ export default function BoardsPage({ isTemplate }: { isTemplate?: boolean }) {
       type: "PRESS",
       stroke: { key: "C" },
       action: () => canCreateBoard && openModal("NEW_BOARD"),
-      description: t`Create new ${isTemplate ? "template" : "board"}`,
+      description: isTemplate ? t`Yeni şablon oluştur` : t`Yeni pano oluştur`,
       group: "ACTIONS",
     });
 
   return (
     <>
       <PageHead
-        title={t`${isTemplate ? "Templates" : "Boards"} | ${workspace.name ?? t`Workspace`}`}
+        title={`${isTemplate ? t`Şablonlar` : t`Panolar`} | ${workspace.name ?? t`Çalışma alanı`}`}
       />
       <div className="m-auto h-full max-w-[1100px] p-8 px-5 md:px-28 md:py-12">
         <div className="relative z-10 mb-8 flex w-full items-center justify-between">
           <h1 className="font-bold tracking-tight text-neutral-900 dark:text-dark-1000 sm:text-[1.2rem]">
-            {t`${isTemplate ? "Templates" : "Boards"}`}
+            {isTemplate ? t`Şablonlar` : t`Panolar`}
           </h1>
           <div className="flex gap-2">
             {!isTemplate && (
@@ -125,6 +126,16 @@ export default function BoardsPage({ isTemplate }: { isTemplate?: boolean }) {
             isVisible={isOpen && modalContentType === "NEW_WORKSPACE"}
           >
             <NewWorkspaceForm />
+          </Modal>
+
+          <Modal
+            modalSize="sm"
+            isVisible={isOpen && modalContentType === "DELETE_BOARD"}
+          >
+            <DeleteBoardConfirmation
+              boardPublicId={entityId}
+              isTemplate={!!isTemplate}
+            />
           </Modal>
         </>
 

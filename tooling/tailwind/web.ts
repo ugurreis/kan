@@ -82,6 +82,15 @@ export default {
         "light-900": "hsl(0deg 0% 52.2%)",
         "light-950": "hsl(0deg 0% 43.5%)",
         "light-1000": "hsl(0deg 0% 9%)",
+        // Nexovias marka ailesi (camgöbeği/teal). Birincil aksiyonlar okunur
+        // koyu tonları kullanır (WCAG-AA); neon tonlar yalnız vurgu/odak içindir.
+        "brand-400": "#2dd4bf",
+        "brand-500": "#14b8a6",
+        "brand-600": "#0d9488",
+        "brand-700": "#0f766e",
+        "brand-800": "#115e59",
+        "nexo-cyan": "#00ffcc",
+        "nexo-cyan-dim": "#00e0b3",
       },
       screens: {
         "2xl": "1600px",

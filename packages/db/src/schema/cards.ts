@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   bigint,
   bigserial,
+  boolean,
   index,
   integer,
   pgEnum,
@@ -48,6 +49,8 @@ export const activityTypes = [
   "card.updated.dueDate.added",
   "card.updated.dueDate.updated",
   "card.updated.dueDate.removed",
+  "card.updated.completed",
+  "card.updated.uncompleted",
   "card.archived",
 ] as const;
 
@@ -80,6 +83,11 @@ export const cards = pgTable(
       () => imports.id,
     ),
     dueDate: timestamp("dueDate"),
+    completed: boolean("completed").notNull().default(false),
+    completedAt: timestamp("completedAt"),
+    completedBy: uuid("completedBy").references(() => users.id, {
+      onDelete: "set null",
+    }),
   },
   (table) => [
     index("card_list_number_idx").on(table.listId, table.cardNumber),

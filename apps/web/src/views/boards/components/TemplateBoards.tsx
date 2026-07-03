@@ -1,4 +1,3 @@
-import { t } from "@lingui/core/macro";
 import { useEffect, useRef, useState } from "react";
 import { HiCheckCircle } from "react-icons/hi2";
 
@@ -10,92 +9,10 @@ export interface Template {
   labels: string[];
 }
 
-export const getTemplates = (): Template[] => [
-  {
-    id: "basic",
-    name: t`Basic Kanban`,
-    lists: [t`To Do`, t`In Progress`, t`Done`],
-    labels: [t`High Priority`, t`Medium Priority`, t`Low Priority`],
-  },
-  {
-    id: "software-dev",
-    name: t`Software Development`,
-    lists: [t`Backlog`, t`To Do`, t`In Progress`, t`Code Review`, t`Done`],
-    labels: [t`Bug`, t`Feature`, t`Enhancement`, t`Critical`, t`Documentation`],
-  },
-  {
-    id: "roadmap-basic",
-    name: t`Basic Roadmap`,
-    lists: [t`Requested`, t`Planned`, t`In Progress`, t`Done`],
-    labels: [t`Feature`, t`Enhancement`, t`Critical`, t`Documentation`],
-  },
-  {
-    id: "roadmap-extended",
-    name: t`Extended Roadmap`,
-    lists: [t`Requested`, t`Under Review`, t`Planned`, t`In Progress`, t`Done`, t`Rejected`],
-    labels: [t`Feature`, t`Enhancement`, t`Critical`, t`Documentation`],
-  },
-  {
-    id: "content-creation",
-    name: t`Content Creation`,
-    lists: [
-      t`Brainstorming`,
-      t`Writing`,
-      t`Editing`,
-      t`Design`,
-      t`Approval`,
-      t`Publishing`,
-      t`Done`,
-    ],
-    labels: [t`Blog Post`, t`Social Media`, t`Video`, t`Newsletter`, t`Urgent`],
-  },
-  {
-    id: "customer-support",
-    name: t`Customer Support`,
-    lists: [
-      t`New Ticket`,
-      t`Triaging`,
-      t`In Progress`,
-      t`Awaiting Customer`,
-      t`Resolution`,
-      t`Done`,
-    ],
-    labels: [
-      t`Bug Report`,
-      t`Feature Request`,
-      t`Question`,
-      t`Urgent`,
-      t`Billing`,
-    ],
-  },
-  {
-    id: "recruitment",
-    name: t`Recruitment`,
-    lists: [
-      t`Applicants`,
-      t`Screening`,
-      t`Interviewing`,
-      t`Offer`,
-      t`Onboarding`,
-      t`Hired`,
-    ],
-    labels: [t`Remote`, t`Full-time`, t`Part-time`, t`Senior`, t`Junior`],
-  },
-  {
-    id: "personal-project",
-    name: t`Personal Project`,
-    lists: [
-      t`Ideas`,
-      t`Research`,
-      t`Planning`,
-      t`Execution`,
-      t`Review`,
-      t`Next Steps`,
-      t`Complete`,
-    ],
-    labels: [t`Important`, t`Quick Win`, t`Long-term`, t`Learning`, t`Fun`],
-  },
-];
+// Hazır şablonlar artık workspace'e "type=template" panosu olarak seed edilir
+// (bkz. scripts/seed-templates.mjs) ve customTemplates üzerinden gelir; böylece
+// hem /templates sayfasında görünür hem örnek kartlarla dolu açılır. Gömülü
+// (kartsız) statik liste kaldırıldı — tek kaynak: workspace şablon-panoları.
 
 export default function TemplateBoards({
   currentBoard,
@@ -112,7 +29,7 @@ export default function TemplateBoards({
   const [showTopFade, setShowTopFade] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const templates = [...(customTemplates ?? []), ...getTemplates()];
+  const templates = [...(customTemplates ?? [])];
 
   const handleScroll = () => {
     if (!scrollRef.current) return;

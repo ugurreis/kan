@@ -47,7 +47,9 @@ const VisibilityButton = ({
     onSuccess: () => {
       showPopup({
         header: t`Board visibility updated`,
-        message: t`The visibility of your board has been set to ${isPublic ? "public" : "private"}.`,
+        message: isPublic
+          ? t`Panonuzun görünürlüğü herkese açık olarak ayarlandı.`
+          : t`Panonuzun görünürlüğü gizli olarak ayarlandı.`,
         icon: "success",
       });
     },

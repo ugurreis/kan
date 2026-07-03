@@ -1,8 +1,11 @@
 import { format, isBefore, isSameYear, startOfDay } from "date-fns";
+import { t } from "@lingui/core/macro";
 import { HiOutlinePaperClip } from "react-icons/hi";
 import {
   HiBars3BottomLeft,
   HiChatBubbleLeft,
+  HiCheckCircle,
+  HiOutlineCheckCircle,
   HiOutlineClock,
 } from "react-icons/hi2";
 import { twMerge } from "tailwind-merge";
@@ -24,9 +27,13 @@ const Card = ({
   comments,
   attachments,
   dueDate,
+  completed = false,
+  onToggleComplete,
 }: {
   title: string;
   ticketNumber?: string | null;
+  completed?: boolean;
+  onToggleComplete?: () => void;
   labels: { name: string; colourCode: string | null }[];
   members: {
     publicId: string;
@@ -74,7 +81,35 @@ const Card = ({
           {ticketNumber}
         </span>
       )}
-      <span className="break-words">{title}</span>
+      <div className="flex items-start gap-2">
+        {onToggleComplete && (
+          <button
+            type="button"
+            aria-label={completed ? t`Tamamlanmadı olarak işaretle` : t`Tamamlandı olarak işaretle`}
+            title={completed ? t`Tamamlanmadı olarak işaretle` : t`Tamamlandı olarak işaretle`}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleComplete();
+            }}
+            className="mt-0.5 flex-shrink-0 text-light-700 transition-colors hover:text-emerald-600 dark:text-dark-800 dark:hover:text-emerald-500"
+          >
+            {completed ? (
+              <HiCheckCircle className="h-[18px] w-[18px] text-emerald-600 dark:text-emerald-500" />
+            ) : (
+              <HiOutlineCheckCircle className="h-[18px] w-[18px]" />
+            )}
+          </button>
+        )}
+        <span
+          className={twMerge(
+            "break-words",
+            completed && "text-light-700 line-through dark:text-dark-800",
+          )}
+        >
+          {title}
+        </span>
+      </div>
       {labels.length ||
       members.length ||
       checklists.length > 0 ||

@@ -281,6 +281,43 @@ export default function BoardPage({ isTemplate }: { isTemplate?: boolean }) {
     },
   });
 
+  const toggleCardCompletedMutation = api.card.update.useMutation({
+    onMutate: async (args) => {
+      await utils.board.byId.cancel();
+
+      const previousState = utils.board.byId.getData(queryParams);
+
+      utils.board.byId.setData(queryParams, (oldBoard) => {
+        if (!oldBoard) return oldBoard;
+
+        return {
+          ...oldBoard,
+          lists: oldBoard.lists.map((list) => ({
+            ...list,
+            cards: list.cards.map((card) =>
+              card.publicId === args.cardPublicId
+                ? { ...card, completed: args.completed ?? card.completed }
+                : card,
+            ),
+          })),
+        };
+      });
+
+      return { previousState };
+    },
+    onError: (_error, _args, context) => {
+      utils.board.byId.setData(queryParams, context?.previousState);
+      showPopup({
+        header: t`Kart güncellenemedi`,
+        message: t`Lütfen daha sonra tekrar deneyin.`,
+        icon: "error",
+      });
+    },
+    onSettled: async () => {
+      await utils.board.byId.invalidate(queryParams);
+    },
+  });
+
   useEffect(() => {
     if (isSuccess && boardData) {
       setValue("name", boardData.name || "");
@@ -562,7 +599,7 @@ export default function BoardPage({ isTemplate }: { isTemplate?: boolean }) {
           )}
           {!boardData && !isLoading && (
             <p className="order-2 block p-0 py-0 font-bold leading-[2.3rem] tracking-tight text-neutral-900 dark:text-dark-1000 sm:text-[1.2rem] md:order-1">
-              {t`${isTemplate ? "Template" : "Board"} not found`}
+              {isTemplate ? t`Şablon bulunamadı` : t`Pano bulunamadı`}
             </p>
           )}
           <div className="order-1 mb-4 flex items-center justify-end space-x-2 md:order-2 md:mb-0">
@@ -779,6 +816,23 @@ export default function BoardPage({ isTemplate }: { isTemplate?: boolean }) {
                                             comments={card.comments ?? []}
                                             attachments={card.attachments}
                                             dueDate={card.dueDate ?? null}
+                                            completed={card.completed}
+                                            onToggleComplete={
+                                              canEditCard &&
+                                              !card.publicId.startsWith(
+                                                "PLACEHOLDER",
+                                              )
+                                                ? () =>
+                                                    toggleCardCompletedMutation.mutate(
+                                                      {
+                                                        cardPublicId:
+                                                          card.publicId,
+                                                        completed:
+                                                          !card.completed,
+                                                      },
+                                                    )
+                                                : undefined
+                                            }
                                           />
                                         </Link>
                                       )}

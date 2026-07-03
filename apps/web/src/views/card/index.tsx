@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { t } from "@lingui/core/macro";
+import { format } from "date-fns";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { HiXMark } from "react-icons/hi2";
+import { HiCheckCircle, HiOutlineCheckCircle, HiXMark } from "react-icons/hi2";
 import { IoChevronForwardSharp } from "react-icons/io5";
+import { twMerge } from "tailwind-merge";
 
 import { authClient } from "@kan/auth/client";
 
@@ -17,6 +19,7 @@ import Modal from "~/components/modal";
 import { NewWorkspaceForm } from "~/components/NewWorkspaceForm";
 import { PageHead } from "~/components/PageHead";
 import { EditYouTubeModal } from "~/components/YouTubeEmbed/EditYouTubeModal";
+import { useLocalisation } from "~/hooks/useLocalisation";
 import { usePermissions } from "~/hooks/usePermissions";
 import { useModal } from "~/providers/modal";
 import { usePopup } from "~/providers/popup";
@@ -213,6 +216,21 @@ export default function CardPage({ isTemplate }: { isTemplate?: boolean }) {
   const board = card?.list.board;
   const workspaceMembers = board?.workspace.members;
   const boardId = board?.publicId;
+
+  const { dateLocale } = useLocalisation();
+
+  const completedByMember = card?.completedBy
+    ? workspaceMembers?.find((member) => member.user?.id === card.completedBy)
+    : undefined;
+  const completedByName = completedByMember
+    ? formatMemberDisplayName(
+        completedByMember.user?.name ?? null,
+        completedByMember.user?.email ?? completedByMember.email,
+      )
+    : null;
+  const formattedCompletedAt = card?.completedAt
+    ? format(card.completedAt, "d MMM yyyy", { locale: dateLocale })
+    : "";
 
   const editorWorkspaceMembers =
     workspaceMembers
@@ -424,6 +442,51 @@ export default function CardPage({ isTemplate }: { isTemplate?: boolean }) {
               </div>
               {card && (
                 <>
+                  {!isTemplate && (
+                    <div className="mb-8">
+                      {canEdit ? (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            updateCard.mutate({
+                              cardPublicId: cardId,
+                              completed: !card.completed,
+                            })
+                          }
+                          disabled={updateCard.isPending}
+                          className={twMerge(
+                            "inline-flex items-center gap-2 rounded-[5px] border px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-60",
+                            card.completed
+                              ? "border-emerald-600/30 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400"
+                              : "border-light-300 text-light-900 hover:bg-light-100 dark:border-dark-300 dark:text-dark-900 dark:hover:bg-dark-200",
+                          )}
+                        >
+                          {card.completed ? (
+                            <HiCheckCircle className="h-4 w-4" />
+                          ) : (
+                            <HiOutlineCheckCircle className="h-4 w-4" />
+                          )}
+                          {card.completed
+                            ? t`Tamamlandı`
+                            : t`Tamamlandı olarak işaretle`}
+                        </button>
+                      ) : (
+                        card.completed && (
+                          <span className="inline-flex items-center gap-2 rounded-[5px] border border-emerald-600/30 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-400">
+                            <HiCheckCircle className="h-4 w-4" />
+                            {t`Tamamlandı`}
+                          </span>
+                        )
+                      )}
+                      {card.completed && card.completedAt && (
+                        <p className="mt-2 text-xs text-light-700 dark:text-dark-800">
+                          {completedByName
+                            ? t`${completedByName} tarafından ${formattedCompletedAt} tarihinde tamamlandı`
+                            : t`${formattedCompletedAt} tarihinde tamamlandı`}
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <div className="mb-10 flex w-full max-w-2xl flex-col justify-between">
                     <form
                       onSubmit={handleSubmit(onSubmit)}

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { t } from "@lingui/core/macro";
 import { useState } from "react";
 
@@ -10,8 +9,6 @@ import commentsIconDark from "~/assets/comments-dark.json";
 import commentsIconLight from "~/assets/comments-light.json";
 import importsIconDark from "~/assets/imports-dark.json";
 import importsIconLight from "~/assets/imports-light.json";
-import integrationsIconDark from "~/assets/integrations-dark.json";
-import integrationsIconLight from "~/assets/integrations-light.json";
 import labelsIconDark from "~/assets/labels-dark.json";
 import labelsIconLight from "~/assets/labels-light.json";
 import membersIconDark from "~/assets/members-dark.json";
@@ -117,12 +114,6 @@ const Features = ({ theme }: { theme: "light" | "dark" }) => {
       icon: isDark ? templatesIconDark : templatesIconLight,
       new: true,
     },
-    {
-      title: t`Integrations`,
-      description: t`Connect your favorite tools to streamline your workflow.`,
-      icon: isDark ? integrationsIconDark : integrationsIconLight,
-      comingSoon: true,
-    },
   ];
 
   return (
@@ -143,17 +134,6 @@ const Features = ({ theme }: { theme: "light" | "dark" }) => {
             {features.map((feature, index) => (
               <FeatureItem key={`feature-${index}`} feature={feature} />
             ))}
-          </div>
-        </div>
-
-        <div>
-          <div className="mt-8 flex items-center gap-2 rounded-full border bg-light-50 px-4 py-1 text-center text-sm text-light-1000 dark:border-dark-300 dark:bg-dark-50 dark:text-dark-900">
-            <p className="text-xs lg:text-sm">
-              {t`We're just getting started. `}
-              <Link href="/kan/roadmap" className="underline">
-                {t`View our roadmap.`}
-              </Link>
-            </p>
           </div>
         </div>
       </div>

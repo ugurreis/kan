@@ -862,6 +862,7 @@ export const cardRouter = createTRPCRouter({
         index: z.number().optional(),
         listPublicId: z.string().min(12).optional(),
         dueDate: z.date().nullable().optional(),
+        completed: z.boolean().optional(),
       }),
     )
     .output(cardUpdateResponseSchema)
@@ -940,13 +941,23 @@ export const cardRouter = createTRPCRouter({
 
       const previousDueDate = existingCard.dueDate;
 
-      if (input.title || input.description || input.dueDate !== undefined) {
+      if (
+        input.title ||
+        input.description ||
+        input.dueDate !== undefined ||
+        input.completed !== undefined
+      ) {
         result = await cardRepo.update(
           ctx.db,
           {
             ...(input.title && { title: input.title }),
             ...(input.description && { description: input.description }),
             ...(input.dueDate !== undefined && { dueDate: input.dueDate }),
+            ...(input.completed !== undefined && {
+              completed: input.completed,
+              completedAt: input.completed ? new Date() : null,
+              completedBy: input.completed ? userId : null,
+            }),
           },
           { cardPublicId: input.cardPublicId },
         );
@@ -1030,6 +1041,19 @@ export const cardRouter = createTRPCRouter({
           createdBy: userId,
           fromListId: existingCard.listId,
           toListId: newListId,
+        });
+      }
+
+      if (
+        input.completed !== undefined &&
+        existingCard.completed !== input.completed
+      ) {
+        activities.push({
+          type: input.completed
+            ? ("card.updated.completed" as const)
+            : ("card.updated.uncompleted" as const),
+          cardId: result.id,
+          createdBy: userId,
         });
       }
 

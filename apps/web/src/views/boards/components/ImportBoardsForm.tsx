@@ -190,7 +190,7 @@ const SelectSource = ({
               !hasIntegrations ? <HiMiniArrowTopRightOnSquare /> : undefined
             }
           >
-            {hasIntegrations ? t`Select source` : t`Connect`}
+            {hasIntegrations ? t`Kaynak seç` : t`Bağlan`}
           </Button>
         </div>
       </div>
@@ -224,8 +224,8 @@ const ImportGithub: React.FC = () => {
   const importProjects = api.import.github.importProjects.useMutation({
     onSuccess: async () => {
       showPopup({
-        header: t`Import complete`,
-        message: t`Your projects have been imported.`,
+        header: t`İçe aktarma tamamlandı`,
+        message: t`Projeleriniz içe aktarıldı.`,
         icon: "success",
       });
       try {
@@ -237,8 +237,8 @@ const ImportGithub: React.FC = () => {
     },
     onError: () => {
       showPopup({
-        header: t`Import failed`,
-        message: t`Please try again later, or contact customer support.`,
+        header: t`İçe aktarma başarısız`,
+        message: t`Lütfen daha sonra tekrar deneyin.`,
         icon: "error",
       });
     },
@@ -278,7 +278,7 @@ const ImportGithub: React.FC = () => {
       return (
         <div className="flex h-full w-full items-center justify-center">
           <p className="text-sm text-neutral-500 dark:text-dark-900">
-            {t`No projects found`}
+            {t`Proje bulunamadı`}
           </p>
         </div>
       );
@@ -310,7 +310,7 @@ const ImportGithub: React.FC = () => {
 
       <div className="mt-12 flex items-center justify-end space-x-4 border-t border-light-600 px-5 pb-5 pt-5 dark:border-dark-600">
         <Toggle
-          label={t`Select all`}
+          label={t`Tümünü seç`}
           isChecked={!!isSelectAllEnabled}
           onChange={() => {
             const newState = !isSelectAllEnabled;
@@ -339,8 +339,8 @@ const ImportGithub: React.FC = () => {
             <Trans>
               <Plural
                 value={projectCount}
-                one={`Import project (1)`}
-                other={`Import projects (${projectCount})`}
+                one={`Projeyi içe aktar (1)`}
+                other={`Projeleri içe aktar (${projectCount})`}
               />
             </Trans>
           </Button>
@@ -376,8 +376,8 @@ const ImportTrello: React.FC = () => {
   const importBoards = api.import.trello.importBoards.useMutation({
     onSuccess: async () => {
       showPopup({
-        header: t`Import complete`,
-        message: t`Your boards have been imported.`,
+        header: t`İçe aktarma tamamlandı`,
+        message: t`Panolarınız içe aktarıldı.`,
         icon: "success",
       });
       try {
@@ -389,8 +389,8 @@ const ImportTrello: React.FC = () => {
     },
     onError: () => {
       showPopup({
-        header: t`Import failed`,
-        message: t`Please try again later, or contact customer support.`,
+        header: t`İçe aktarma başarısız`,
+        message: t`Lütfen daha sonra tekrar deneyin.`,
         icon: "error",
       });
     },
@@ -427,7 +427,7 @@ const ImportTrello: React.FC = () => {
       return (
         <div className="flex h-full w-full items-center justify-center">
           <p className="text-sm text-neutral-500 dark:text-dark-900">
-            {t`No boards found`}
+            {t`Pano bulunamadı`}
           </p>
         </div>
       );
@@ -459,7 +459,7 @@ const ImportTrello: React.FC = () => {
 
       <div className="mt-12 flex items-center justify-end space-x-4 border-t border-light-600 px-5 pb-5 pt-5 dark:border-dark-600">
         <Toggle
-          label={t`Select all`}
+          label={t`Tümünü seç`}
           isChecked={!!isSelectAllEnabled}
           onChange={() => {
             const newState = !isSelectAllEnabled;
@@ -487,8 +487,8 @@ const ImportTrello: React.FC = () => {
             <Trans>
               <Plural
                 value={boardCount}
-                one={`Import board (1)`}
-                other={`Import boards (${boardCount})`}
+                one={`Panoyu içe aktar (1)`}
+                other={`Panoları içe aktar (${boardCount})`}
               />
             </Trans>
           </Button>
@@ -508,7 +508,7 @@ export function ImportBoardsForm() {
       <div className="flex w-full items-center justify-between px-5 pb-4 pt-5">
         <div className="flex items-center">
           <h2 className="text-sm font-medium text-neutral-900 dark:text-dark-1000">
-            {t`New import`}
+            {t`Yeni içe aktarma`}
           </h2>
         </div>
 

@@ -358,8 +358,8 @@ export function Auth({
                 size="lg"
               >
                 <Trans>
-                  Continue with{" "}
-                  {key === "oidc" ? oidcProviderName : provider.name}
+                  {key === "oidc" ? oidcProviderName : provider.name} ile devam
+                  et
                 </Trans>
               </Button>
             );
@@ -439,8 +439,9 @@ export function Auth({
               size="lg"
               variant="secondary"
             >
-              {isSignUp ? t`Sign up with ` : t`Continue with `}
-              {isMagicLinkMode ? t`magic link` : t`email`}
+              {isSignUp
+                ? t`${isMagicLinkMode ? "Sihirli bağlantı" : "E-posta"} ile kayıt ol`
+                : t`${isMagicLinkMode ? "Sihirli bağlantı" : "E-posta"} ile devam et`}
             </Button>
           </div>
         </form>
