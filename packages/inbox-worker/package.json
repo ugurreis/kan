@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@kan/tsconfig": "workspace:*",
+    "@types/html-to-text": "^9.0.4",
     "@types/mailparser": "^3.4.4",
     "tsx": "^4.19.2",
     "typescript": "catalog:",
