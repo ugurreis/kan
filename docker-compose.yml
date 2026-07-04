@@ -29,6 +29,9 @@ services:
     env_file:
       - .env
     environment:
+      # Coolify: web servisini (port 3000) reverse-proxy'ye bağlar ve domain atar.
+      # Coolify dışı düz `docker compose up` için etkisizdir (yalnız Coolify okur).
+      - SERVICE_FQDN_WEB_3000=${SERVICE_FQDN_WEB_3000}
       # Required environment variables
       - NEXT_PUBLIC_BASE_URL=${NEXT_PUBLIC_BASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
