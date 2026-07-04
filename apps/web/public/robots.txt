@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Disallow: /boards
+Disallow: /settings
+Disallow: /members
+Disallow: /templates

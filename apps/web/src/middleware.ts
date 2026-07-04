@@ -13,6 +13,10 @@ export function middleware(request: NextRequest) {
       const loginUrl = new URL("/login", request.url);
       return NextResponse.redirect(loginUrl);
     }
+    // Markalı pazarlama landing'ini (Creem ödeme butonlu, çift dilli statik sayfa)
+    // kökte sun. URL "/" kalır; içerik public/nexora-landing.html'den gelir.
+    const landingUrl = new URL("/nexora-landing.html", request.url);
+    return NextResponse.rewrite(landingUrl);
   }
 
   return NextResponse.next();

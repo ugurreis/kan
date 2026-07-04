@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Nexora — İşleriniz tek bakışta. Sade Kanban, Türkçe & İngilizce.</title>
+<meta name="description" content="Nexora, ekiplerin işlerini panolar, listeler ve kartlarla düzenlemesini sağlayan sade bir Kanban uygulamasıdır. Türkçe ve İngilizce. Hazır şablonlarla saniyeler içinde başlayın." />
+<meta name="theme-color" content="#0f766e" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Plus+Jakarta+Sans:ital,wght@0,400..800;1,400..600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+/* ============================================================
+   NEXORA — Landing (Trello-esinli, geliştirilmiş) — çift dil TR/EN
+   Palet: Nexovias ailesi teal + neon mint aksan, sıcak kağıt zemin
+   ============================================================ */
+:root{
+  --paper:#f8f7f2;
+  --paper-2:#f1efe7;
+  --ink:#0c1a18;
+  --ink-soft:#3b4a47;
+  --ink-mute:#54635f;
+  --line:#e4e1d6;
+  --brand:#0f766e;        /* teal-700 */
+  --brand-600:#0d9488;
+  --brand-500:#14b8a6;
+  --brand-400:#2dd4bf;
+  --mint:#10b981;
+  --neon:#00e6b0;         /* nexo-cyan-dim */
+  --amber:#f59e0b;
+  --coral:#fb7185;
+  --violet:#8b7cf6;
+  --sky:#38bdf8;
+  --card:#ffffff;
+  --shadow-sm:0 1px 2px rgba(12,26,24,.06),0 2px 8px rgba(12,26,24,.05);
+  --shadow-md:0 6px 22px -6px rgba(12,26,24,.16),0 2px 8px rgba(12,26,24,.06);
+  --shadow-lg:0 30px 60px -22px rgba(12,26,24,.30),0 8px 24px -12px rgba(12,26,24,.18);
+  --shadow-brand:0 22px 50px -20px rgba(15,118,110,.55);
+  --r-sm:10px; --r:16px; --r-lg:24px; --r-xl:34px;
+  --f-display:"Bricolage Grotesque",Georgia,serif;
+  --f-body:"Plus Jakarta Sans",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --maxw:1200px;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  font-family:var(--f-body);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.6;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+::selection{background:var(--brand-400);color:#04231f}
+:focus-visible{outline:3px solid var(--neon);outline-offset:2px;border-radius:6px}
+
+/* ---------- Atmosfer katmanları ---------- */
+.bg-atmos{position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:
+    radial-gradient(60% 45% at 82% 8%, rgba(20,184,166,.16), transparent 60%),
+    radial-gradient(50% 40% at 8% 18%, rgba(0,230,176,.12), transparent 60%),
+    radial-gradient(70% 60% at 50% 120%, rgba(15,118,110,.10), transparent 60%),
+    linear-gradient(180deg,var(--paper),var(--paper-2));
+}
+.bg-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:.5;
+  background-image:
+    linear-gradient(rgba(12,26,24,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(12,26,24,.035) 1px,transparent 1px);
+  background-size:52px 52px;
+  mask-image:radial-gradient(circle at 50% 30%,#000 0%,transparent 78%);
+}
+.bg-grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.blob{position:fixed;z-index:-2;border-radius:50%;filter:blur(60px);opacity:.5;pointer-events:none;will-change:transform}
+.blob.b1{width:520px;height:520px;top:-160px;right:-120px;background:radial-gradient(circle,#2dd4bf,transparent 68%)}
+.blob.b2{width:460px;height:460px;top:38%;left:-200px;background:radial-gradient(circle,#00e6b0,transparent 68%)}
+
+/* ---------- Yardımcılar ---------- */
+.wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);
+  font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--brand);
+  background:rgba(15,118,110,.08);border:1px solid rgba(15,118,110,.18);
+  padding:7px 14px;border-radius:999px}
+.eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--neon);box-shadow:0 0 0 4px rgba(0,230,176,.22)}
+h1,h2,h3,h4{font-family:var(--f-display);font-weight:700;line-height:1.02;letter-spacing:-.02em;color:var(--ink)}
+.section-title{font-size:clamp(2rem,4.4vw,3.3rem);letter-spacing:-.03em}
+.lede{color:var(--ink-soft);font-size:clamp(1rem,1.4vw,1.18rem);max-width:56ch}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  font-family:var(--f-body);font-weight:700;font-size:.98rem;cursor:pointer;
+  border:0;border-radius:999px;padding:14px 26px;transition:transform .25s var(--ease),box-shadow .25s var(--ease),background .25s}
+.btn:active{transform:translateY(1px) scale(.99)}
+.btn-primary{background:linear-gradient(135deg,var(--brand-600),var(--brand));color:#fff;box-shadow:var(--shadow-brand)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 28px 60px -18px rgba(15,118,110,.7)}
+.btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--brand-400)}
+.btn-lg{padding:17px 34px;font-size:1.05rem}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;font-weight:600;
+  padding:6px 12px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-soft);box-shadow:var(--shadow-sm)}
+
+/* dil düğmesi */
+.lang-btn{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);
+  border-radius:10px;padding:9px 12px;font-family:var(--f-body);font-weight:700;font-size:.85rem;
+  color:var(--ink-soft);cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .2s,border-color .2s,color .2s}
+.lang-btn:hover{border-color:var(--brand-400);color:var(--ink);transform:translateY(-1px)}
+.lang-btn svg{opacity:.8}
+
+/* reveal — IntersectionObserver + CSS (kütüphaneden bağımsız, sağlam).
+   JS yoksa içerik görünür; JS varsa görünüme girince açılır. */
+[data-reveal]{opacity:1}
+.js [data-reveal]{opacity:0;transform:translateY(26px);
+  transition:opacity .72s var(--ease),transform .72s var(--ease)}
+.js [data-reveal].in{opacity:1;transform:none}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{position:sticky;top:0;z-index:60;transition:background .3s,box-shadow .3s,border-color .3s}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:74px}
+.nav.scrolled{background:rgba(248,247,242,.82);backdrop-filter:blur(14px) saturate(1.4);
+  border-bottom:1px solid var(--line);box-shadow:0 4px 20px -12px rgba(12,26,24,.25)}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--f-display);font-weight:800;font-size:1.32rem;letter-spacing:-.03em}
+.brand .mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--brand-500),var(--brand));box-shadow:var(--shadow-brand);position:relative;overflow:hidden}
+.brand .mark::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 40%,rgba(255,255,255,.5) 50%,transparent 60%);
+  transform:translateX(-120%);animation:sheen 5s var(--ease) infinite 1.5s}
+@keyframes sheen{0%,60%{transform:translateX(-120%)}80%,100%{transform:translateX(120%)}}
+.brand .mark svg{width:19px;height:19px}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{padding:9px 14px;border-radius:10px;font-weight:600;font-size:.92rem;color:var(--ink-soft);transition:color .2s,background .2s}
+.nav-links a:hover{color:var(--ink);background:rgba(15,118,110,.07)}
+.nav-cta{display:flex;align-items:center;gap:10px}
+.nav-burger{display:none;background:#fff;border:1px solid var(--line);border-radius:10px;width:44px;height:44px;place-items:center;cursor:pointer}
+@media(max-width:900px){
+  .nav-links{display:none}
+  .nav-burger{display:grid}
+  .nav-cta .btn-ghost{display:none}
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative;padding:64px 0 40px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:52px;align-items:center}
+@media(max-width:980px){.hero-grid{grid-template-columns:1fr;gap:36px}}
+.hero h1{font-size:clamp(2.6rem,6.2vw,4.7rem);letter-spacing:-.045em;margin:22px 0 20px}
+.hero h1 .grad{background:linear-gradient(120deg,var(--brand-600),var(--mint) 60%,var(--neon));
+  -webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
+.hero .lede{font-size:clamp(1.05rem,1.6vw,1.28rem)}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin:30px 0 22px}
+.hero-trust{display:flex;flex-wrap:wrap;align-items:center;gap:18px;color:var(--ink-mute);font-size:.9rem}
+.hero-trust .stars{color:var(--amber);letter-spacing:2px}
+.avatars{display:flex}
+.avatars span{width:30px;height:30px;border-radius:50%;border:2px solid var(--paper);margin-left:-9px;
+  display:grid;place-items:center;font-size:.72rem;font-weight:700;color:#fff;box-shadow:var(--shadow-sm)}
+
+/* ---- Hero board mockup ---- */
+.board-stage{position:relative}
+.board-glow{position:absolute;inset:-8% -6% -12% -6%;z-index:0;border-radius:var(--r-xl);
+  background:radial-gradient(60% 60% at 60% 20%,rgba(20,184,166,.28),transparent 70%);filter:blur(30px)}
+.board{position:relative;z-index:1;background:linear-gradient(180deg,#ffffff,#fbfaf6);
+  border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-lg);
+  padding:16px;overflow:hidden}
+.board-topbar{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 14px}
+.board-dots{display:flex;gap:7px}
+.board-dots i{width:11px;height:11px;border-radius:50%;display:block}
+.board-dots i:nth-child(1){background:#ff6058}
+.board-dots i:nth-child(2){background:#ffbd2e}
+.board-dots i:nth-child(3){background:#28c840}
+.board-title{font-family:var(--f-display);font-weight:700;font-size:.98rem;color:var(--ink-soft)}
+.board-chip{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.14em;color:var(--brand);
+  background:rgba(15,118,110,.09);padding:4px 9px;border-radius:999px}
+.cols{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:520px){.cols{grid-template-columns:repeat(2,1fr)}}
+.col{background:var(--paper-2);border-radius:var(--r);padding:10px;min-height:220px}
+.col-h{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;font-weight:700;color:var(--ink-soft);padding:2px 4px 10px}
+.col-h .count{font-family:var(--f-mono);font-size:.68rem;color:var(--ink-mute);background:#fff;border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.tcard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 11px;margin-bottom:9px;
+  box-shadow:var(--shadow-sm);cursor:grab;will-change:transform}
+.tcard:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.tcard .labels{display:flex;gap:5px;margin-bottom:8px}
+.tcard .labels b{height:6px;width:30px;border-radius:999px;display:block}
+.lb-green{background:var(--mint)}.lb-amber{background:var(--amber)}.lb-coral{background:var(--coral)}
+.lb-sky{background:var(--sky)}.lb-violet{background:var(--violet)}.lb-teal{background:var(--brand-500)}
+.tcard p{font-size:.82rem;font-weight:600;color:var(--ink);line-height:1.35}
+.tcard .meta{display:flex;align-items:center;justify-content:space-between;margin-top:9px;color:var(--ink-mute);font-size:.7rem}
+.tcard .meta .who{width:21px;height:21px;border-radius:50%;display:grid;place-items:center;color:#04231f;font-size:.62rem;font-weight:800}
+.tcard.done p{text-decoration:line-through;color:var(--ink-mute)}
+.tcard .check{display:inline-flex;align-items:center;gap:5px;color:var(--mint);font-size:.7rem;font-weight:700}
+.tcard.ghost{opacity:.5;border-style:dashed;box-shadow:none;background:transparent}
+.tcard.drag{position:absolute;z-index:20;width:calc(25% - 21px);box-shadow:var(--shadow-lg);transform:rotate(-3deg);pointer-events:none}
+@media(max-width:520px){.tcard.drag{width:calc(50% - 18px)}}
+.progress{height:5px;background:var(--paper-2);border-radius:999px;overflow:hidden;margin-top:9px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--brand-500),var(--neon));border-radius:999px}
+
+/* floating badges around board */
+.float{position:absolute;z-index:2;background:#fff;border:1px solid var(--line);border-radius:14px;
+  padding:10px 13px;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:9px;font-size:.82rem;font-weight:700;will-change:transform}
+.float .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff}
+.float.f1{top:-18px;left:-26px}
+.float.f2{bottom:26px;right:-30px}
+@media(max-width:980px){.float{display:none}}
+
+/* ============================================================
+   MARQUEE (şablon isimleri)
+   ============================================================ */
+.marquee{margin:34px 0 8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  padding:16px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marquee-track{display:flex;gap:14px;width:max-content;animation:scrollx 34s linear infinite}
+.marquee:hover .marquee-track{animation-play-state:paused}
+@keyframes scrollx{to{transform:translateX(-50%)}}
+.mq-item{display:flex;align-items:center;gap:9px;white-space:nowrap;font-weight:700;color:var(--ink-soft);
+  background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;box-shadow:var(--shadow-sm)}
+.mq-item .d{width:8px;height:8px;border-radius:50%}
+
+/* ============================================================
+   SECTIONS ortak
+   ============================================================ */
+section{position:relative}
+.sec{padding:96px 0}
+.sec-head{max-width:640px;margin-bottom:52px}
+.sec-head.center{margin-inline:auto;text-align:center}
+.sec-head p{margin-top:16px}
+
+/* Özellikler */
+.feat-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+.feat{grid-column:span 4;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:26px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s}
+.feat:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--brand-400)}
+.feat::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .3s;
+  background:radial-gradient(120% 90% at 100% 0,rgba(20,184,166,.10),transparent 60%)}
+.feat:hover::before{opacity:1}
+.feat.big{grid-column:span 8}
+.feat.tall{grid-row:span 2}
+@media(max-width:900px){.feat,.feat.big{grid-column:span 12}}
+.feat .ficon{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;margin-bottom:18px;
+  color:#fff;box-shadow:var(--shadow-md);position:relative}
+.feat h3{font-size:1.28rem;margin-bottom:9px}
+.feat p{color:var(--ink-soft);font-size:.96rem}
+.feat .tag{position:absolute;top:20px;right:20px;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.14em;
+  color:var(--brand);background:rgba(15,118,110,.09);padding:3px 8px;border-radius:999px}
+.mini-board{margin-top:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mini-col{background:var(--paper-2);border-radius:10px;padding:8px;min-height:92px}
+.mini-card{background:#fff;border:1px solid var(--line);border-radius:8px;height:20px;margin-bottom:6px;box-shadow:var(--shadow-sm)}
+.mini-card.a{width:100%}.mini-card.b{width:75%}.mini-card.c{width:88%}
+
+/* Nasıl çalışır */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;counter-reset:step}
+@media(max-width:860px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px 26px;position:relative;box-shadow:var(--shadow-sm)}
+.step::before{counter-increment:step;content:"0" counter(step);position:absolute;top:20px;right:24px;
+  font-family:var(--f-display);font-size:2.6rem;font-weight:800;color:rgba(15,118,110,.12)}
+.step .sic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff;margin-bottom:16px;box-shadow:var(--shadow-md)}
+.step h3{font-size:1.16rem;margin-bottom:8px}
+.step p{color:var(--ink-soft);font-size:.94rem}
+.steps-line{position:absolute;top:52px;left:12%;right:12%;height:2px;z-index:-1;
+  background:repeating-linear-gradient(90deg,var(--brand-400) 0 10px,transparent 10px 20px);opacity:.5}
+@media(max-width:860px){.steps-line{display:none}}
+
+/* Spotlight (tamamlandı özelliği) */
+.spot{display:grid;grid-template-columns:1.05fr 1fr;gap:48px;align-items:center;
+  background:linear-gradient(160deg,#0c1a18,#0f2b27);color:#eafaf6;border-radius:var(--r-xl);
+  padding:52px;position:relative;overflow:hidden;box-shadow:var(--shadow-lg)}
+@media(max-width:900px){.spot{grid-template-columns:1fr;padding:34px}}
+.spot::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(50% 60% at 90% 0,rgba(0,230,176,.24),transparent 60%),
+  radial-gradient(40% 50% at 0 100%,rgba(20,184,166,.18),transparent 60%)}
+.spot h2{color:#fff}
+.spot .lede{color:#a9c9c2}
+.spot .eyebrow{color:var(--neon);background:rgba(0,230,176,.10);border-color:rgba(0,230,176,.28)}
+.spot-list{list-style:none;margin-top:22px;display:grid;gap:12px}
+.spot-list li{display:flex;gap:12px;align-items:flex-start;color:#cfe9e3;font-size:.98rem}
+.spot-list .ok{flex:none;width:24px;height:24px;border-radius:50%;background:rgba(0,230,176,.16);color:var(--neon);display:grid;place-items:center;margin-top:1px}
+.activity{position:relative;z-index:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:var(--r-lg);padding:20px;backdrop-filter:blur(6px)}
+.act-row{display:flex;gap:12px;align-items:flex-start;padding:11px 4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.act-row:last-child{border-bottom:0}
+.act-av{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:700;color:#04231f}
+.act-row p{font-size:.86rem;color:#cfe9e3}
+.act-row p b{color:#fff}
+.act-row .t{margin-left:auto;font-family:var(--f-mono);font-size:.66rem;color:#7fa89f;white-space:nowrap}
+
+/* Şablonlar showcase */
+.tpl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.tpl{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow-sm);
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease),border-color .3s}
+.tpl:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:var(--shadow-md);border-color:var(--brand-400)}
+.tpl .tt{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:12px}
+.tpl .tt .e{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1.05rem;color:#fff}
+.tpl .lists{display:flex;flex-wrap:wrap;gap:6px}
+.tpl .lists span{font-size:.72rem;font-weight:600;color:var(--ink-soft);background:var(--paper-2);border-radius:8px;padding:4px 8px}
+
+/* Fiyatlandırma */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:stretch}
+@media(max-width:900px){.price-grid{grid-template-columns:1fr}}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
+.plan.pop{border-color:var(--brand);box-shadow:var(--shadow-brand);position:relative;transform:translateY(-6px)}
+.plan.pop .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--brand-600),var(--brand));
+  color:#fff;font-size:.72rem;font-weight:700;padding:5px 14px;border-radius:999px;box-shadow:var(--shadow-brand)}
+.plan h3{font-size:1.2rem}
+.plan .amt{font-family:var(--f-display);font-size:2.6rem;font-weight:800;margin:10px 0 2px;letter-spacing:-.03em}
+.plan .amt small{font-family:var(--f-body);font-size:.9rem;font-weight:600;color:var(--ink-mute)}
+.plan .amt .tl{display:block;font-family:var(--f-body);font-size:.8rem;font-weight:600;color:var(--ink-mute);margin-top:3px;letter-spacing:0}
+.plan .amt-note{font-size:.78rem;font-weight:600;color:var(--brand);margin:0 0 10px;min-height:18px}
+.plan .desc{color:var(--ink-soft);font-size:.9rem;min-height:40px}
+.plan ul{list-style:none;margin:18px 0 24px;display:grid;gap:11px}
+.plan li{display:flex;gap:10px;font-size:.9rem;color:var(--ink-soft)}
+.plan li .ok{flex:none;width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,.14);color:var(--mint);display:grid;place-items:center}
+.plan .btn{margin-top:auto;width:100%}
+
+/* SSS */
+.faq{max-width:820px;margin-inline:auto}
+.qa{border:1px solid var(--line);background:var(--card);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.qa summary{list-style:none;cursor:pointer;padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-weight:700;font-size:1.02rem}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary .plus{flex:none;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);display:grid;place-items:center;transition:transform .3s var(--ease),background .3s,color .3s;color:var(--brand)}
+.qa[open] summary .plus{transform:rotate(45deg);background:var(--brand);color:#fff;border-color:var(--brand)}
+.qa .a{padding:0 22px 20px;color:var(--ink-soft);font-size:.96rem}
+
+/* Final CTA */
+.cta{position:relative;overflow:hidden;border-radius:var(--r-xl);padding:64px 40px;text-align:center;
+  background:linear-gradient(140deg,var(--brand),#0b5b54 60%,#083f3a);color:#fff;box-shadow:var(--shadow-lg)}
+.cta::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(40% 60% at 20% 0,rgba(0,230,176,.32),transparent 60%),
+  radial-gradient(45% 60% at 90% 100%,rgba(45,212,191,.28),transparent 60%)}
+.cta h2{position:relative;color:#fff;font-size:clamp(2rem,4.6vw,3.4rem)}
+.cta p{position:relative;color:#bfe9e1;max-width:52ch;margin:16px auto 30px}
+.cta .btn-primary{background:#fff;color:var(--brand);box-shadow:0 18px 40px -14px rgba(0,0,0,.4)}
+.cta .btn-primary:hover{transform:translateY(-2px);box-shadow:0 26px 56px -14px rgba(0,0,0,.5)}
+.cta .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.3)}
+.cta-mini{position:relative;margin-top:18px;color:#9fd3ca;font-size:.86rem}
+
+/* Footer */
+.footer{border-top:1px solid var(--line);margin-top:40px;padding:56px 0 40px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+@media(max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+.foot-brand p{color:var(--ink-soft);font-size:.92rem;margin-top:14px;max-width:34ch}
+.foot-col h3{font-family:var(--f-body);font-size:.78rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:14px}
+.foot-col a{display:block;color:var(--ink-soft);font-size:.92rem;padding:5px 0;transition:color .2s}
+.foot-col a:hover{color:var(--brand)}
+.foot-bottom{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;
+  margin-top:44px;padding-top:22px;border-top:1px solid var(--line);color:var(--ink-mute);font-size:.85rem}
+.foot-bottom .socials{display:flex;gap:8px}
+.foot-bottom .socials a{width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--ink-soft);transition:all .25s}
+.foot-bottom .socials a:hover{color:#fff;background:var(--brand);border-color:var(--brand);transform:translateY(-2px)}
+
+/* scroll progress */
+.scrollbar{position:fixed;top:0;left:0;height:3px;z-index:80;width:0;
+  background:linear-gradient(90deg,var(--brand-500),var(--neon))}
+
+/* to-top */
+.totop{position:fixed;right:22px;bottom:22px;z-index:70;width:48px;height:48px;border-radius:14px;
+  background:var(--brand);color:#fff;border:0;display:grid;place-items:center;cursor:pointer;
+  box-shadow:var(--shadow-brand);opacity:0;transform:translateY(14px);transition:opacity .3s,transform .3s}
+.totop.show{opacity:1;transform:none}
+
+/* İstatistik bandı */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-xl);
+  padding:34px 30px;box-shadow:var(--shadow-md);margin-top:8px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr);gap:26px}}
+.stat{text-align:center;position:relative}
+.stat + .stat::before{content:"";position:absolute;left:-10px;top:14%;height:72%;width:1px;background:var(--line)}
+@media(max-width:760px){.stat + .stat::before{display:none}}
+.stat .n{font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,3.4vw,2.7rem);
+  letter-spacing:-.03em;background:linear-gradient(120deg,var(--brand-600),var(--mint));
+  -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.stat .l{margin-top:8px;color:var(--ink-soft);font-size:.9rem;font-weight:600}
+
+/* Görüşler */
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+@media(max-width:900px){.quotes{grid-template-columns:1fr}}
+.quote{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:26px;
+  box-shadow:var(--shadow-sm);display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;
+  transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.quote:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.quote .mark{font-family:var(--f-display);font-size:3.4rem;line-height:.4;color:var(--brand-400);height:22px}
+.quote p{color:var(--ink);font-size:1rem;font-weight:500}
+.quote .who{display:flex;align-items:center;gap:12px;margin-top:auto}
+.quote .who .av{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;font-size:.82rem}
+.quote .who b{display:block;font-size:.9rem}
+.quote .who span{color:var(--ink-mute);font-size:.8rem}
+.quote .stars{color:var(--amber);letter-spacing:2px;font-size:.9rem}
+
+/* Karşılaştırma */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.cmp{grid-template-columns:1fr}}
+.cmp .card{border-radius:var(--r-lg);padding:28px;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.cmp .old{background:var(--paper-2)}
+.cmp .new{background:linear-gradient(160deg,#0c1a18,#123330);color:#eafaf6;border-color:transparent;box-shadow:var(--shadow-lg)}
+.cmp h3{font-size:1.16rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.cmp .new h3{color:#fff}
+.cmp ul{list-style:none;display:grid;gap:12px}
+.cmp li{display:flex;gap:11px;align-items:flex-start;font-size:.95rem}
+.cmp .old li{color:var(--ink-mute)}
+.cmp .new li{color:#cfe9e3}
+.cmp .ic{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;margin-top:1px}
+.cmp .old .ic{background:#eadfd8;color:#b0705f}
+.cmp .new .ic{background:rgba(0,230,176,.16);color:var(--neon)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+  .js [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="bg-atmos"></div>
+<div class="bg-grid"></div>
+<div class="bg-grain"></div>
+<span class="blob b1" id="blob1"></span>
+<span class="blob b2" id="blob2"></span>
+<div class="scrollbar" id="scrollbar"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Nexora">
+      <span class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="5" height="16" rx="1.6" fill="#fff"/><rect x="10" y="4" width="5" height="10" rx="1.6" fill="#fff" opacity=".9"/><rect x="17" y="4" width="4" height="13" rx="1.4" fill="#fff" opacity=".7"/></svg>
+      </span>
+      Nexora
+    </a>
+    <nav class="nav-links" aria-label="Birincil">
+      <a href="#ozellikler" data-i18n="nav.features">Özellikler</a>
+      <a href="#sablonlar" data-i18n="nav.templates">Şablonlar</a>
+      <a href="#nasil" data-i18n="nav.how">Nasıl çalışır</a>
+      <a href="#fiyat" data-i18n="nav.pricing">Fiyatlandırma</a>
+      <a href="#sss" data-i18n="nav.faq">SSS</a>
+    </nav>
+    <div class="nav-cta">
+      <button class="lang-btn" id="langBtn" aria-label="EN — Switch to English">
+        <svg width="15" height="15" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.6 2.6 15.4 0 18M12 3c-2.6 2.6-2.6 15.4 0 18"/></svg>
+        <span id="langLbl">EN</span>
+      </button>
+      <a href="/login" class="btn btn-ghost" data-i18n="nav.login">Giriş yap</a>
+      <a href="/signup" class="btn btn-primary" data-i18n="nav.signup">Ücretsiz başla</a>
+      <button class="nav-burger" id="burger" aria-label="Menü">
+        <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<a id="top"></a>
+<main class="hero wrap" id="hero">
+  <div class="hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow" data-reveal><span class="dot"></span><span data-i18n="hero.eyebrow">Türkçe & İngilizce · Sıfır kurulum</span></span>
+      <h1 data-reveal data-i18n="hero.h1" data-html>İşleriniz,<br><span class="grad">tek bakışta.</span></h1>
+      <p class="lede" data-reveal data-i18n="hero.lede">Nexora, ekibinizin işlerini panolar, listeler ve kartlarla düzenlemesini sağlayan
+        sade bir Kanban uygulaması — tamamen Türkçe, dilerseniz İngilizce. Hazır şablonlarla saniyeler içinde başlayın,
+        hiçbir şeyle uğraşmadan.</p>
+      <div class="hero-actions" data-reveal>
+        <a href="/signup" class="btn btn-primary btn-lg"><span data-i18n="hero.cta1">Ücretsiz başla</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" fill="none"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </a>
+        <a href="#nasil" class="btn btn-ghost btn-lg" data-i18n="hero.cta2">Nasıl çalışır?</a>
+      </div>
+      <div class="hero-trust" data-reveal>
+        <div class="avatars" aria-hidden="true">
+          <span style="background:linear-gradient(135deg,#0d9488,#14b8a6)">AK</span>
+          <span style="background:linear-gradient(135deg,#f59e0b,#fb7185)">ED</span>
+          <span style="background:linear-gradient(135deg,#8b7cf6,#38bdf8)">MY</span>
+          <span style="background:linear-gradient(135deg,#10b981,#00e6b0)">SZ</span>
+        </div>
+        <div><span class="stars">★★★★★</span> &nbsp;<span data-i18n="hero.trust">Küçük ekipler için tasarlandı</span></div>
+      </div>
+    </div>
+
+    <!-- Board mockup -->
+    <div class="board-stage" data-reveal>
+      <div class="board-glow"></div>
+      <div class="float f1" id="float1">
+        <span class="ic" style="background:linear-gradient(135deg,#10b981,#00e6b0)">
+          <svg width="16" height="16" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.4" fill="none"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <span data-i18n="float1">Görev tamamlandı</span>
+      </div>
+      <div class="float f2" id="float2">
+        <span class="ic" style="background:linear-gradient(135deg,#0d9488,#0f766e)">
+          <svg width="16" height="16" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 8v8M8 12h8"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>
+        </span>
+        <span data-i18n="float2">10 hazır şablon</span>
+      </div>
+
+      <div class="board" id="board" role="img" aria-label="Nexora Kanban board example">
+        <div class="board-topbar">
+          <div class="board-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="board-title" data-i18n="board.title">Pazarlama Panosu</div>
+          <div class="board-chip">NEXORA</div>
+        </div>
+        <div class="cols" id="cols">
+          <div class="col" data-col="0">
+            <div class="col-h"><span data-i18n="col.todo">Yapılacaklar</span> <span class="count">3</span></div>
+            <div class="tcard" data-card>
+              <div class="labels"><b class="lb-coral"></b><b class="lb-amber"></b></div>
+              <p data-i18n="board.c1">Rakip analizi raporu</p>
+              <div class="meta"><span>NEX-3</span><span class="who" style="background:#f59e0b">ED</span></div>
+            </div>
+            <div class="tcard" data-card>
+              <div class="labels"><b class="lb-sky"></b></div>
+              <p data-i18n="board.c2">Blog içerik takvimi</p>
+              <div class="meta"><span>NEX-1</span><span class="who" style="background:#38bdf8">MY</span></div>
+            </div>
+            <div class="tcard ghost" id="slot" data-card></div>
+          </div>
+          <div class="col" data-col="1">
+            <div class="col-h"><span data-i18n="col.doing">Devam Ediyor</span> <span class="count">2</span></div>
+            <div class="tcard" data-card>
+              <div class="labels"><b class="lb-teal"></b><b class="lb-green"></b></div>
+              <p data-i18n="board.c3">Yeni landing sayfası tasarımı</p>
+              <div class="progress"><i style="width:64%"></i></div>
+              <div class="meta"><span>NEX-2 · 4/6</span><span class="who" style="background:#2dd4bf">AK</span></div>
+            </div>
+            <div class="tcard" data-card>
+              <div class="labels"><b class="lb-violet"></b></div>
+              <p data-i18n="board.c4">Instagram reklam kampanyası</p>
+              <div class="meta"><span>NEX-4</span><span class="who" style="background:#8b7cf6">SZ</span></div>
+            </div>
+          </div>
+          <div class="col" data-col="2">
+            <div class="col-h"><span data-i18n="col.review">İncelemede</span> <span class="count">1</span></div>
+            <div class="tcard" data-card>
+              <div class="labels"><b class="lb-amber"></b></div>
+              <p data-i18n="board.c5">SEO anahtar kelime çalışması</p>
+              <div class="meta"><span>NEX-5</span><span class="who" style="background:#f59e0b">ED</span></div>
+            </div>
+          </div>
+          <div class="col" data-col="3">
+            <div class="col-h"><span data-i18n="col.done">Tamamlandı</span> <span class="count">2</span></div>
+            <div class="tcard done" data-card>
+              <div class="labels"><b class="lb-green"></b></div>
+              <p class="check"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="board.c6">Web sitesi yenileme</span></p>
+              <div class="meta"><span>NEX-9</span><span class="who" style="background:#10b981">AK</span></div>
+            </div>
+            <div class="tcard done" data-card>
+              <div class="labels"><b class="lb-teal"></b></div>
+              <p class="check"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg> <span data-i18n="board.c7">Marka kimlik kılavuzu</span></p>
+              <div class="meta"><span>NEX-8</span><span class="who" style="background:#2dd4bf">MY</span></div>
+            </div>
+          </div>
+        </div>
+        <!-- dragged card animates between columns -->
+        <div class="tcard drag" id="dragCard">
+          <div class="labels"><b class="lb-green"></b><b class="lb-teal"></b></div>
+          <p data-i18n="board.c8">Ürün tanıtım videosu</p>
+          <div class="meta"><span>NEX-6</span><span class="who" style="background:#14b8a6">SZ</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- template marquee -->
+  <div class="marquee" data-reveal>
+    <div class="marquee-track" id="mq">
+      <span class="mq-item"><i class="d" style="background:#0d9488"></i><span data-i18n="tpl.software">Yazılım Geliştirme</span></span>
+      <span class="mq-item"><i class="d" style="background:#f59e0b"></i><span data-i18n="tpl.content">İçerik & Sosyal Medya</span></span>
+      <span class="mq-item"><i class="d" style="background:#8b7cf6"></i><span data-i18n="tpl.sales">Satış Pipeline (CRM)</span></span>
+      <span class="mq-item"><i class="d" style="background:#10b981"></i><span data-i18n="tpl.support">Müşteri Destek</span></span>
+      <span class="mq-item"><i class="d" style="background:#fb7185"></i><span data-i18n="tpl.hiring">İşe Alım</span></span>
+      <span class="mq-item"><i class="d" style="background:#38bdf8"></i><span data-i18n="tpl.roadmap">Ürün Yol Haritası</span></span>
+      <span class="mq-item"><i class="d" style="background:#14b8a6"></i><span data-i18n="tpl.campaign">Pazarlama Kampanyası</span></span>
+      <span class="mq-item"><i class="d" style="background:#f59e0b"></i><span data-i18n="tpl.event">Etkinlik Planlama</span></span>
+      <span class="mq-item"><i class="d" style="background:#8b7cf6"></i><span data-i18n="tpl.weekly">Haftalık Kişisel Plan</span></span>
+      <span class="mq-item"><i class="d" style="background:#0d9488"></i><span data-i18n="tpl.basic">Basit Kanban</span></span>
+    </div>
+  </div>
+</main>
+
+<!-- ============ İSTATİSTİK BANDI ============ -->
+<section class="wrap" style="padding:20px 24px 0">
+  <div class="stats" data-reveal>
+    <div class="stat"><div class="n">10</div><div class="l" data-i18n="stat1.l">Hazır şablon</div></div>
+    <div class="stat"><div class="n" data-i18n="stat2.n">60 sn</div><div class="l" data-i18n="stat2.l">Kurulum süresi</div></div>
+    <div class="stat"><div class="n">TR + EN</div><div class="l" data-i18n="stat3.l">Arayüz dili</div></div>
+    <div class="stat"><div class="n">∞</div><div class="l" data-i18n="stat4.l">Sınırsız kart</div></div>
+  </div>
+</section>
+
+<!-- ============ ÖZELLİKLER ============ -->
+<section id="ozellikler" class="sec">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="feat.eyebrow">Neden Nexora</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="feat.h2" data-html>Kanban'ın en iyi yanı,<br>sade ve sizin dilinizde.</h2>
+      <p class="lede" data-i18n="feat.lede">Trello'nun sevdiğiniz sadeliği; üstüne ekibinizin gerçekten ihtiyaç duyduğu
+        tamamlanma takibi, hazır şablonlar ve tam yerelleştirilmiş bir deneyim.</p>
+    </div>
+
+    <div class="feat-grid">
+      <article class="feat big tall" data-reveal>
+        <span class="tag" data-i18n="feat.tagcore">ÇEKİRDEK</span>
+        <span class="ficon" style="background:linear-gradient(135deg,#0d9488,#0f766e)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="14" rx="1.5"/></svg>
+        </span>
+        <h3 data-i18n="feat1.h">Panolar, listeler, kartlar</h3>
+        <p data-i18n="feat1.p">Sürükle-bırak ile işleri taşıyın. Etiketler, son tarihler, kontrol listeleri, üye atama ve
+          yorumlar — hepsi tanıdık, hepsi hızlı. Öğrenmek için kılavuza gerek yok.</p>
+        <div class="mini-board" aria-hidden="true">
+          <div class="mini-col"><div class="mini-card a"></div><div class="mini-card b"></div></div>
+          <div class="mini-col"><div class="mini-card c"></div></div>
+          <div class="mini-col"><div class="mini-card b"></div><div class="mini-card a"></div></div>
+        </div>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#10b981,#00e6b0)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.2" fill="none"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <h3 data-i18n="feat2.h">Tamamlanma takibi</h3>
+        <p data-i18n="feat2.p">Her kartta onay kutusu. Kim, ne zaman tamamladı — kart üstünde ve etkinlik akışında görünür.</p>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#f59e0b,#fb7185)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+        </span>
+        <h3 data-i18n="feat3.h">Son tarih & takvim</h3>
+        <p data-i18n="feat3.p">Geciken işler kırmızıyla belirir. Hiçbir teslim tarihi gözden kaçmaz.</p>
+      </article>
+
+      <article class="feat big" data-reveal>
+        <span class="tag" data-i18n="feat.tagpop">POPÜLER</span>
+        <span class="ficon" style="background:linear-gradient(135deg,#8b7cf6,#38bdf8)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M4 5h16v14H4z" rx="2"/><path d="M4 9h16M9 5v14"/></svg>
+        </span>
+        <h3 data-i18n="feat4.h">10 kartlı hazır şablon</h3>
+        <p data-i18n="feat4.p">Yazılım, satış, içerik, destek, işe alım ve dahası. Bir şablon seçin — pano örnek kartlarıyla
+          dolu gelsin. Boş sayfa korkusu yok; ilk günden üretken olun.</p>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#0d9488,#14b8a6)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 3.5a3 3 0 0 1 0 6M21 20a5.5 5.5 0 0 0-4-5.3"/></svg>
+        </span>
+        <h3 data-i18n="feat5.h">Roller & yetkiler</h3>
+        <p data-i18n="feat5.p">Admin, üye, misafir. Müşteri veya ekip üyesi davet edin; herkes tam yetkisiyle.</p>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#fb7185,#f59e0b)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M4 7h16M4 12h10M4 17h7"/></svg>
+        </span>
+        <h3 data-i18n="feat6.h">Türkçe & İngilizce</h3>
+        <p data-i18n="feat6.p">Menüler, bildirimler ve tarihler tam Türkçe — istenirse tek tıkla İngilizce. Çeviri kokan hiçbir yer yok.</p>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#38bdf8,#0d9488)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/><circle cx="12" cy="12" r="4"/></svg>
+        </span>
+        <h3 data-i18n="feat7.h">Otomasyona hazır</h3>
+        <p data-i18n="feat7.p">Webhook ve REST API ile n8n'e bağlayın; "kart taşındı → sosyal medyada yayınla" gibi akışlar kurun.</p>
+      </article>
+
+      <article class="feat" data-reveal>
+        <span class="ficon" style="background:linear-gradient(135deg,#8b7cf6,#0f766e)">
+          <svg width="24" height="24" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M12 7v5l3 2"/></svg>
+        </span>
+        <h3 data-i18n="feat8.h">Kendi sunucunuzda</h3>
+        <p data-i18n="feat8.p">Tek kiracılı kurulum. Verileriniz sizde kalır; istediğiniz alan adında yayınlayın.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPOTLIGHT ============ -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <div class="spot" data-reveal>
+      <div>
+        <span class="eyebrow"><span class="dot"></span><span data-i18n="spot.eyebrow">Görünürlük</span></span>
+        <h2 class="section-title" style="margin-top:16px" data-i18n="spot.h2" data-html>Kim ne yaptı,<br>her an belli.</h2>
+        <p class="lede" data-i18n="spot.lede">Bir işi bitirince kartı "Tamamlandı" işaretleyin. Ekibiniz ve yöneticiniz
+          durumu anında görür; her değişiklik etkinlik akışına düşer.</p>
+        <ul class="spot-list">
+          <li><span class="ok"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="spot.l1">Kart üstünde tek tıkla tamamlanma</span></li>
+          <li><span class="ok"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="spot.l2">"X tarafından, şu tarihte tamamlandı" kaydı</span></li>
+          <li><span class="ok"><svg width="13" height="13" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="spot.l3">Yorumlar, ekler ve tüm geçmiş tek yerde</span></li>
+        </ul>
+      </div>
+      <div class="activity" data-reveal>
+        <div class="act-row">
+          <span class="act-av" style="background:#00e6b0">AK</span>
+          <p><b>Ayşe K.</b> <span data-i18n="act.a1">kartı tamamlandı olarak işaretledi</span></p>
+          <span class="t" data-i18n="act.t1">az önce</span>
+        </div>
+        <div class="act-row">
+          <span class="act-av" style="background:#38bdf8">MY</span>
+          <p><b>Mert Y.</b> <span data-i18n="act.a2">"Test" listesine taşıdı</span></p>
+          <span class="t" data-i18n="act.t2">12 dk</span>
+        </div>
+        <div class="act-row">
+          <span class="act-av" style="background:#f59e0b">ED</span>
+          <p><b>Elif D.</b> <span data-i18n="act.a3">son tarihi 12 Tem olarak ayarladı</span></p>
+          <span class="t" data-i18n="act.t3">1 sa</span>
+        </div>
+        <div class="act-row">
+          <span class="act-av" style="background:#8b7cf6">SZ</span>
+          <p><b>Selin Z.</b> <span data-i18n="act.a4">yeni kontrol listesi ekledi</span></p>
+          <span class="t" data-i18n="act.t4">3 sa</span>
+        </div>
+        <div class="act-row">
+          <span class="act-av" style="background:#0d9488">AK</span>
+          <p><b>Ayşe K.</b> <span data-i18n="act.a5">kartı oluşturdu</span></p>
+          <span class="t" data-i18n="act.t5">dün</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ŞABLONLAR ============ -->
+<section id="sablonlar" class="sec">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="tpls.eyebrow">Hazır şablonlar</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="tpls.h2">Boş sayfayla başlamayın.</h2>
+      <p class="lede" style="margin-inline:auto" data-i18n="tpls.lede">Her şablon örnek kartlarıyla gelir. Seçin, adını verin, çalışmaya başlayın.</p>
+    </div>
+    <div class="tpl-grid">
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#0d9488">⌘</span><span data-i18n="tpl.software">Yazılım Geliştirme</span></div><div class="lists"><span data-i18n="l.backlog">Backlog</span><span data-i18n="col.todo">Yapılacaklar</span><span data-i18n="l.test">Test</span><span data-i18n="col.done">Tamamlandı</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#f59e0b">◎</span><span data-i18n="tpl.content">İçerik & Sosyal Medya</span></div><div class="lists"><span data-i18n="l.ideas">Fikirler</span><span data-i18n="l.design">Tasarım</span><span data-i18n="l.scheduled">Planlandı</span><span data-i18n="l.published">Yayında</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#10b981">₺</span><span data-i18n="tpl.sales">Satış Pipeline (CRM)</span></div><div class="lists"><span data-i18n="l.lead">Potansiyel</span><span data-i18n="l.quote">Teklif</span><span data-i18n="l.negotiation">Müzakere</span><span data-i18n="l.won">Kazanıldı</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#38bdf8">☎</span><span data-i18n="tpl.support">Müşteri Destek</span></div><div class="lists"><span data-i18n="l.newreq">Yeni Talep</span><span data-i18n="l.inreview">İnceleniyor</span><span data-i18n="l.resolved">Çözüldü</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#8b7cf6">✦</span><span data-i18n="tpl.hiring">İşe Alım</span></div><div class="lists"><span data-i18n="l.applicants">Başvurular</span><span data-i18n="l.interview">Mülakat</span><span data-i18n="l.quote">Teklif</span><span data-i18n="l.hired">İşe Başladı</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#fb7185">◈</span><span data-i18n="tpl.roadmap">Ürün Yol Haritası</span></div><div class="lists"><span data-i18n="l.request">Talep</span><span data-i18n="l.scheduled">Planlandı</span><span data-i18n="l.indev">Geliştiriliyor</span><span data-i18n="l.released">Yayınlandı</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#14b8a6">◆</span><span data-i18n="tpl.campaign">Pazarlama Kampanyası</span></div><div class="lists"><span data-i18n="l.idea">Fikir</span><span data-i18n="l.prep">Hazırlık</span><span data-i18n="l.running">Yürütmede</span><span data-i18n="l.finished">Bitti</span></div></div>
+      <div class="tpl" data-reveal><div class="tt"><span class="e" style="background:#0f766e">✎</span><span data-i18n="tpl.weekly">Haftalık Kişisel Plan</span></div><div class="lists"><span data-i18n="l.thisweek">Bu Hafta</span><span data-i18n="l.today">Bugün</span><span data-i18n="l.waiting">Bekliyor</span><span data-i18n="l.finished">Bitti</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ NASIL ÇALIŞIR ============ -->
+<section id="nasil" class="sec">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="how.eyebrow">Üç adım</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="how.h2" data-html>Bir kahve molasından<br>daha kısa sürede.</h2>
+    </div>
+    <div class="steps" style="position:relative">
+      <span class="steps-line" aria-hidden="true"></span>
+      <div class="step" data-reveal>
+        <span class="sic" style="background:linear-gradient(135deg,#0d9488,#0f766e)">
+          <svg width="22" height="22" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><path d="M12 5v14M5 12h14"/></svg>
+        </span>
+        <h3 data-i18n="step1.h">Pano oluşturun</h3>
+        <p data-i18n="step1.p">Sıfırdan ya da hazır bir şablondan. Örnek kartlarla dolu bir pano saniyeler içinde hazır.</p>
+      </div>
+      <div class="step" data-reveal>
+        <span class="sic" style="background:linear-gradient(135deg,#8b7cf6,#38bdf8)">
+          <svg width="22" height="22" viewBox="0 0 24 24" stroke="#fff" stroke-width="2" fill="none"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 3.5a3 3 0 0 1 0 6"/></svg>
+        </span>
+        <h3 data-i18n="step2.h">Ekibi davet edin</h3>
+        <p data-i18n="step2.p">E-posta ile üye ekleyin, rolleri belirleyin. Herkes aynı panoyu gerçek zamanlı görür.</p>
+      </div>
+      <div class="step" data-reveal>
+        <span class="sic" style="background:linear-gradient(135deg,#10b981,#00e6b0)">
+          <svg width="22" height="22" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.2" fill="none"><path d="M20 6 9 17l-5-5"/></svg>
+        </span>
+        <h3 data-i18n="step3.h">İşleri bitirin</h3>
+        <p data-i18n="step3.p">Kartları taşıyın, tamamlandı işaretleyin. İlerlemeniz tek bakışta ortada.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KARŞILAŞTIRMA ============ -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="cmp.eyebrow">Fark</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="cmp.h2">Karmaşık araçları geride bırakın.</h2>
+      <p class="lede" style="margin-inline:auto" data-i18n="cmp.lede">Onlarca özelliğe boğulmak yerine, gerçekten kullandığınız işe odaklanın.</p>
+    </div>
+    <div class="cmp">
+      <div class="card old" data-reveal>
+        <h3 data-i18n="cmp.oldh">Karmaşık araçlar</h3>
+        <ul>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg></span> <span data-i18n="cmp.o1">Öğrenmesi günler süren arayüz</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg></span> <span data-i18n="cmp.o2">Yarım yamalak yerelleştirme</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg></span> <span data-i18n="cmp.o3">Boş panoyla baş başa kalmak</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg></span> <span data-i18n="cmp.o4">Kullanmadığınız yüzlerce ayar</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M6 6l12 12M18 6 6 18"/></svg></span> <span data-i18n="cmp.o5">Verinizin başkasının sunucusunda olması</span></li>
+        </ul>
+      </div>
+      <div class="card new" data-reveal>
+        <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="4" height="16" rx="1.4" fill="#00e6b0"/><rect x="10" y="4" width="4" height="10" rx="1.4" fill="#2dd4bf"/><rect x="17" y="4" width="3.5" height="13" rx="1.2" fill="#14b8a6"/></svg> Nexora</h3>
+        <ul>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n1">İlk dakikada anlaşılan sadelik</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n2">Baştan sona gerçek Türkçe & İngilizce</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n3">Örnek kartlarla dolu hazır şablonlar</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n4">İhtiyacınız kadar özellik, fazlası değil</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n5">Kendi sunucunuzda, KVKK uyumlu</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FİYATLANDIRMA ============ -->
+<section id="fiyat" class="sec">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="price.eyebrow">Fiyatlandırma</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="price.h2">Basit, öngörülebilir.</h2>
+      <p class="lede" style="margin-inline:auto" data-i18n="price.lede">Gizli ücret yok. Sınırsız kullanıcı, verileriniz sizde.</p>
+    </div>
+    <div class="price-grid">
+      <div class="plan" data-reveal>
+        <h3 data-i18n="p1.h">Başlangıç</h3>
+        <div class="amt" data-i18n="p1.amt" data-html>14 gün<small> ücretsiz</small></div>
+        <p class="amt-note" data-i18n="p1.note">Kredi kartı gerekmez</p>
+        <p class="desc" data-i18n="p1.desc">Denemek isteyenler için — hazır demo ortamı.</p>
+        <ul>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p1.f1">Tüm özellikleri deneyin</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p1.f2">Hazır şablonlar & örnek kartlar</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p1.f3">Kurulum gerektirmez</span></li>
+        </ul>
+        <a href="/signup" class="btn btn-ghost" data-i18n="p1.btn">Demoyu deneyin</a>
+      </div>
+      <div class="plan pop" data-reveal>
+        <span class="badge" data-i18n="p.badge">En popüler</span>
+        <h3 data-i18n="p2.h">Ekip</h3>
+        <div class="amt" id="amtTeam"></div>
+        <p class="amt-note" id="noteTeam"></p>
+        <p class="desc" data-i18n="p2.desc">Biz barındırır ve yönetiriz. Sınırsız kullanıcı.</p>
+        <ul>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f1">Sınırsız pano, üye & kart</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f2">Hosting + güncelleme + yedek dahil</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f3">Roller, yetkiler, Webhook & API</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f4">Öncelikli destek</span></li>
+        </ul>
+        <a href="https://creem.io/product/prod_5JrWqfXRjq19X7bBkzTkhS" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="p2.btn">Ekiple başla</a>
+      </div>
+      <div class="plan" data-reveal>
+        <h3 data-i18n="p3.h">Kurumsal</h3>
+        <div class="amt" id="amtEnt"></div>
+        <p class="amt-note" id="noteEnt"></p>
+        <p class="desc" data-i18n="p3.desc">Kendi sunucunuzda, kendi alan adınızda.</p>
+        <ul>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f1">Tek kiracılı kurulum</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f2">Beyaz etiket markalama</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f3">KVKK uyumlu tam veri sahipliği</span></li>
+        </ul>
+        <a href="https://creem.io/product/prod_1nCOoJQ6Vv6Wu3UyOwVbiv" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="p3.btn">Kuruluma başla</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GÖRÜŞLER ============ -->
+<section class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="q.eyebrow">Kullanıcılar ne diyor</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="q.h2">Ekipler Nexora'yı seviyor.</h2>
+    </div>
+    <div class="quotes">
+      <figure class="quote" data-reveal>
+        <span class="mark" aria-hidden="true">”</span>
+        <div class="stars" aria-label="5">★★★★★</div>
+        <p data-i18n="q1.p">Ekibimiz Trello'dan geçti; Türkçe olması ve şablonların hazır gelmesi ilk günden fark yarattı.
+          Artık kim ne yapıyor tek bakışta görüyoruz.</p>
+        <figcaption class="who">
+          <span class="av" style="background:linear-gradient(135deg,#0d9488,#14b8a6)">AK</span>
+          <div><b>Ayşe Kaya</b><span data-i18n="q1.r">Ajans Kurucusu</span></div>
+        </figcaption>
+      </figure>
+      <figure class="quote" data-reveal>
+        <span class="mark" aria-hidden="true">”</span>
+        <div class="stars" aria-label="5">★★★★★</div>
+        <p data-i18n="q2.p">Tamamlandı işaretleme ve etkinlik akışı sayesinde haftalık toplantılarımız yarı yarıya kısaldı.
+          Sade ama tam ihtiyacımız olan kadar güçlü.</p>
+        <figcaption class="who">
+          <span class="av" style="background:linear-gradient(135deg,#8b7cf6,#38bdf8)">MY</span>
+          <div><b>Mert Yıldız</b><span data-i18n="q2.r">Yazılım Takım Lideri</span></div>
+        </figcaption>
+      </figure>
+      <figure class="quote" data-reveal>
+        <span class="mark" aria-hidden="true">”</span>
+        <div class="stars" aria-label="5">★★★★★</div>
+        <p data-i18n="q3.p">Sosyal medya içeriklerimizi Nexora'da planlıyoruz. n8n ile bağlayınca "onaylandı" kartları
+          otomatik yayına düşüyor. Küçük ekip için tam isabet.</p>
+        <figcaption class="who">
+          <span class="av" style="background:linear-gradient(135deg,#f59e0b,#fb7185)">ED</span>
+          <div><b>Elif Demir</b><span data-i18n="q3.r">Sosyal Medya Yöneticisi</span></div>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SSS ============ -->
+<section id="sss" class="sec">
+  <div class="wrap">
+    <div class="sec-head center" data-reveal>
+      <span class="eyebrow"><span class="dot"></span><span data-i18n="faq.eyebrow">Sık sorulanlar</span></span>
+      <h2 class="section-title" style="margin-top:16px" data-i18n="faq.h2">Merak edilenler</h2>
+    </div>
+    <div class="faq">
+      <details class="qa" data-reveal open>
+        <summary><span data-i18n="faq.q1">Sıfırdan mı başlamam gerekiyor?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="a" data-i18n="faq.a1">Hayır. 10 hazır şablon örnek kartlarıyla birlikte gelir. Bir şablon seçtiğinizde pano
+          hemen dolu olarak açılır; hiçbir şeyi sıfırdan kurmanıza gerek kalmaz.</div>
+      </details>
+      <details class="qa" data-reveal>
+        <summary><span data-i18n="faq.q2">Panolarımı başka bir uygulamadan taşıyabilir miyim?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="a" data-i18n="faq.a2">Trello ve GitHub'dan doğrudan içe aktarma vardır. Asana, Monday veya Notion kullanıyorsanız
+          hazır bir şablonla hızlıca eşdeğerini kurabilir ya da Trello üzerinden aktarabilirsiniz.</div>
+      </details>
+      <details class="qa" data-reveal>
+        <summary><span data-i18n="faq.q3">Türkçe ve İngilizce destekliyor mu?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="a" data-i18n="faq.a3">Evet. Varsayılan dil Türkçedir; menüler, bildirimler ve tarihler dahil her şey Türkçe.
+          Ayarlardan tek tıkla İngilizceye geçebilirsiniz.</div>
+      </details>
+      <details class="qa" data-reveal>
+        <summary><span data-i18n="faq.q4">Verilerim nerede saklanıyor?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="a" data-i18n="faq.a4">Kurumsal planda Nexora kendi sunucunuzda tek kiracılı olarak çalışır. Verileriniz
+          sizde kalır ve KVKK uyumludur.</div>
+      </details>
+      <details class="qa" data-reveal>
+        <summary><span data-i18n="faq.q5">Ekibimi nasıl davet ederim?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
+        <div class="a" data-i18n="faq.a5">Üyeler sayfasından e-posta ile davet gönderin ve rol (admin, üye, misafir) atayın.
+          Davet ettiğiniz kişiler panoları gerçek zamanlı görür.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section id="iletisim" class="sec" style="padding-top:20px">
+  <div class="wrap">
+    <div class="cta" data-reveal>
+      <h2 data-i18n="cta.h2" data-html>Bugün başlayın.<br>Yarın teslim edin.</h2>
+      <p data-i18n="cta.p">Nexora ile ekibiniz dakikalar içinde düzenli çalışmaya başlar. Kredi kartı gerekmez.</p>
+      <div style="position:relative;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <a href="/signup" class="btn btn-primary btn-lg" data-i18n="cta.b1">Ücretsiz hesap oluştur</a>
+        <a href="/boards" class="btn btn-ghost btn-lg" data-i18n="cta.b2">Demoyu gör</a>
+      </div>
+      <p class="cta-mini" data-i18n="cta.mini">Kurulum yok · Anında pano · Türkçe & İngilizce</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <span class="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="5" height="16" rx="1.6" fill="#fff"/><rect x="10" y="4" width="5" height="10" rx="1.6" fill="#fff" opacity=".9"/><rect x="17" y="4" width="4" height="13" rx="1.4" fill="#fff" opacity=".7"/></svg></span>
+          Nexora
+        </a>
+        <p data-i18n="foot.about">Ekiplerin işlerini panolar, listeler ve kartlarla düzenlemesini sağlayan sade, çift dilli Kanban uygulaması.</p>
+      </div>
+      <div class="foot-col">
+        <h3 data-i18n="foot.product">Ürün</h3>
+        <a href="#ozellikler" data-i18n="nav.features">Özellikler</a>
+        <a href="#sablonlar" data-i18n="nav.templates">Şablonlar</a>
+        <a href="#fiyat" data-i18n="nav.pricing">Fiyatlandırma</a>
+        <a href="/boards" data-i18n="foot.demo">Demo</a>
+      </div>
+      <div class="foot-col">
+        <h3 data-i18n="foot.resources">Kaynaklar</h3>
+        <a href="#sss" data-i18n="nav.faq">SSS</a>
+        <a href="#nasil" data-i18n="nav.how">Nasıl çalışır</a>
+        <a href="/docs" data-i18n="foot.docs">Dokümanlar</a>
+        <a href="#">API</a>
+      </div>
+      <div class="foot-col">
+        <h3 data-i18n="foot.company">Şirket</h3>
+        <a href="#" data-i18n="foot.aboutus">Hakkımızda</a>
+        <a href="#iletisim" data-i18n="foot.contact">İletişim</a>
+        <a href="/privacy" data-i18n="foot.privacy">Gizlilik</a>
+        <a href="/terms" data-i18n="foot.terms">Şartlar</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span data-i18n="foot.copy">© 2026 Nexora · Nexovias tarafından geliştirildi.</span>
+      <div class="socials">
+        <a href="#" aria-label="X"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7-5.7 7H2l7.5-9L1.7 2h6.6l4.5 6.5L18.9 2Z"/></svg></a>
+        <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 0 3.5a2.5 2.5 0 0 1 4.98 0ZM.3 8h4.4v12H.3V8Zm7 0h4.2v1.6h.06c.6-1.1 2-2.2 4-2.2 4.3 0 5.1 2.8 5.1 6.4V20h-4.4v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9V20H7.3V8Z"/></svg></a>
+        <a href="#" aria-label="GitHub"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.47-1.1-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.9.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.86v2.76c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="totop" id="totop" aria-label="Yukarı çık / Back to top">
+  <svg width="20" height="20" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<script>
+/* ============================================================
+   Nexora landing — çift dil (TR/EN) + etkileşim & animasyon
+   - i18n: TR metin DOM'da varsayılan; EN sözlükten uygulanır.
+   - Fiyat: USD ana, ≈TL canlı kurla (fallback sabit).
+   - Dil: saat dilimi + tarayıcı dili sezgisi; manuel düğme localStorage'da kalır.
+   - Reveal: IntersectionObserver + CSS. Motion: sadece süsleme (guard'lı).
+   ============================================================ */
+(function(){
+  var root = document.documentElement;
+  root.classList.add("js");
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---- Marquee: kesintisiz döngü için içeriği ikile (i18n'den ÖNCE) ---- */
+  var mq=document.getElementById("mq"); if(mq) mq.innerHTML += mq.innerHTML;
+
+  /* ============================================================
+     i18n
+     ============================================================ */
+  var EN = {
+    "meta.title":"Nexora — Your work at a glance. Simple Kanban, Turkish & English.",
+    "meta.desc":"Nexora is a simple Kanban app that helps teams organize work with boards, lists and cards — in Turkish and English. Start in seconds with ready-made templates.",
+    "nav.features":"Features","nav.templates":"Templates","nav.how":"How it works","nav.pricing":"Pricing","nav.faq":"FAQ",
+    "nav.login":"Log in","nav.signup":"Start free",
+    "hero.eyebrow":"Turkish & English · Zero setup",
+    "hero.h1":"Your work,<br><span class=\"grad\">at a glance.</span>",
+    "hero.lede":"Nexora is a simple Kanban app that helps your team organize work with boards, lists and cards — fully in Turkish, or English if you prefer. Start in seconds with ready-made templates, no fuss.",
+    "hero.cta1":"Start free","hero.cta2":"How it works?","hero.trust":"Built for small teams",
+    "float1":"Task completed","float2":"10 ready templates",
+    "board.title":"Marketing Board",
+    "col.todo":"To Do","col.doing":"In Progress","col.review":"In Review","col.done":"Done",
+    "board.c1":"Competitor analysis report","board.c2":"Blog content calendar","board.c3":"New landing page design",
+    "board.c4":"Instagram ad campaign","board.c5":"SEO keyword research","board.c6":"Website revamp",
+    "board.c7":"Brand identity guide","board.c8":"Product demo video",
+    "tpl.software":"Software Development","tpl.content":"Content & Social","tpl.sales":"Sales Pipeline (CRM)",
+    "tpl.support":"Customer Support","tpl.hiring":"Hiring","tpl.roadmap":"Product Roadmap",
+    "tpl.campaign":"Marketing Campaign","tpl.event":"Event Planning","tpl.weekly":"Weekly Personal Plan","tpl.basic":"Simple Kanban",
+    "stat1.l":"Ready-made templates","stat2.n":"60 s","stat2.l":"Setup time","stat3.l":"Interface languages","stat4.l":"Unlimited cards",
+    "feat.eyebrow":"Why Nexora",
+    "feat.h2":"The best of Kanban,<br>simple and in your language.",
+    "feat.lede":"The simplicity you love from Trello — plus the completion tracking your team actually needs, ready-made templates and a fully localized experience.",
+    "feat.tagcore":"CORE","feat.tagpop":"POPULAR",
+    "feat1.h":"Boards, lists, cards","feat1.p":"Drag and drop to move work. Labels, due dates, checklists, assignees and comments — all familiar, all fast. No manual needed.",
+    "feat2.h":"Completion tracking","feat2.p":"A checkbox on every card. Who completed it and when — shown on the card and in the activity feed.",
+    "feat3.h":"Due dates & calendar","feat3.p":"Overdue work turns red. No deadline ever slips through.",
+    "feat4.h":"10 templates with sample cards","feat4.p":"Software, sales, content, support, hiring and more. Pick a template — your board arrives full of example cards. No blank-page fear; be productive from day one.",
+    "feat5.h":"Roles & permissions","feat5.p":"Admin, member, guest. Invite a client or a teammate; everyone with the right access.",
+    "feat6.h":"Turkish & English","feat6.p":"Menus, notifications and dates in fluent Turkish — or English in one click. Nothing feels machine-translated.",
+    "feat7.h":"Automation-ready","feat7.p":"Connect to n8n via webhooks and a REST API; build flows like “card moved → post to social”.",
+    "feat8.h":"On your own server","feat8.p":"Single-tenant install. Your data stays with you; publish on any domain you like.",
+    "spot.eyebrow":"Visibility",
+    "spot.h2":"Who did what,<br>always clear.",
+    "spot.lede":"Finish a job and mark the card “Done”. Your team and manager see it instantly; every change lands in the activity feed.",
+    "spot.l1":"One-click completion right on the card","spot.l2":"A “completed by X, on this date” record","spot.l3":"Comments, attachments and full history in one place",
+    "act.a1":"marked the card as complete","act.a2":"moved it to “Test”","act.a3":"set the due date to Jul 12","act.a4":"added a new checklist","act.a5":"created the card",
+    "act.t1":"just now","act.t2":"12 min","act.t3":"1 h","act.t4":"3 h","act.t5":"yesterday",
+    "tpls.eyebrow":"Ready-made templates","tpls.h2":"Don't start from a blank page.","tpls.lede":"Every template comes with example cards. Pick one, name it, get to work.",
+    "l.backlog":"Backlog","l.test":"Test","l.ideas":"Ideas","l.design":"Design","l.scheduled":"Scheduled","l.published":"Published",
+    "l.lead":"Lead","l.quote":"Quote","l.negotiation":"Negotiation","l.won":"Won","l.newreq":"New Request","l.inreview":"In Review","l.resolved":"Resolved",
+    "l.applicants":"Applicants","l.interview":"Interview","l.hired":"Hired","l.request":"Request","l.indev":"In Dev","l.released":"Released",
+    "l.idea":"Idea","l.prep":"Prep","l.running":"Running","l.finished":"Done","l.thisweek":"This Week","l.today":"Today","l.waiting":"Waiting",
+    "how.eyebrow":"Three steps","how.h2":"In less time<br>than a coffee break.",
+    "step1.h":"Create a board","step1.p":"From scratch or a ready template. A board full of example cards is ready in seconds.",
+    "step2.h":"Invite your team","step2.p":"Add members by email, set roles. Everyone sees the same board in real time.",
+    "step3.h":"Get things done","step3.p":"Move cards, mark them complete. Your progress is clear at a glance.",
+    "cmp.eyebrow":"The difference","cmp.h2":"Leave complex tools behind.","cmp.lede":"Instead of drowning in dozens of features, focus on the work you actually do.",
+    "cmp.oldh":"Complex tools",
+    "cmp.o1":"An interface that takes days to learn","cmp.o2":"Half-baked localization","cmp.o3":"Left alone with an empty board","cmp.o4":"Hundreds of settings you never use","cmp.o5":"Your data on someone else's server",
+    "cmp.n1":"Clarity you get in the first minute","cmp.n2":"Real Turkish & English, end to end","cmp.n3":"Ready templates full of example cards","cmp.n4":"As many features as you need, no more","cmp.n5":"On your own server, KVKK/GDPR-friendly",
+    "price.eyebrow":"Pricing","price.h2":"Simple, predictable.","price.lede":"No hidden fees. Unlimited users, your data stays yours.",
+    "p.badge":"Most popular",
+    "p1.h":"Get started","p1.amt":"14 days<small> free</small>","p1.note":"No credit card","p1.desc":"For those who want to try — a ready demo environment.",
+    "p1.f1":"Try every feature","p1.f2":"Templates & example cards","p1.f3":"No setup required","p1.btn":"Try the demo",
+    "p2.h":"Team","p2.desc":"We host and manage it. Unlimited users.",
+    "p2.f1":"Unlimited boards, members & cards","p2.f2":"Hosting + updates + backups included","p2.f3":"Roles, permissions, Webhook & API","p2.f4":"Priority support","p2.btn":"Get started",
+    "p3.h":"Enterprise","p3.desc":"On your own server, your own domain.",
+    "p3.f1":"Single-tenant install","p3.f2":"White-label branding","p3.f3":"Full data ownership, KVKK/GDPR",
+    "p3.btn":"Get set up",
+    "q.eyebrow":"What users say","q.h2":"Teams love Nexora.",
+    "q1.p":"Our team moved from Trello; being in Turkish and templates arriving ready made a difference from day one. Now we see who's doing what at a glance.","q1.r":"Agency Founder",
+    "q2.p":"Thanks to completion marking and the activity feed, our weekly meetings got cut in half. Simple, yet exactly as powerful as we need.","q2.r":"Software Team Lead",
+    "q3.p":"We plan our social content in Nexora. Wired to n8n, “approved” cards go live automatically. Spot on for a small team.","q3.r":"Social Media Manager",
+    "faq.eyebrow":"FAQ","faq.h2":"Common questions",
+    "faq.q1":"Do I have to start from scratch?","faq.a1":"No. 10 ready templates come with example cards. Pick one and the board opens already filled; you never set anything up from zero.",
+    "faq.q2":"Can I move my boards from another app?","faq.a2":"There's direct import from Trello and GitHub. On Asana, Monday or Notion, you can quickly recreate the equivalent with a template or migrate via Trello.",
+    "faq.q3":"Does it support Turkish and English?","faq.a3":"Yes. Turkish is the default — menus, notifications and dates included. You can switch to English in one click from settings.",
+    "faq.q4":"Where is my data stored?","faq.a4":"On the Enterprise plan, Nexora runs single-tenant on your own server. Your data stays with you and is KVKK/GDPR-friendly.",
+    "faq.q5":"How do I invite my team?","faq.a5":"Send email invites from the Members page and assign a role (admin, member, guest). Invited people see boards in real time.",
+    "cta.h2":"Start today.<br>Ship tomorrow.","cta.p":"With Nexora your team gets organized in minutes. No credit card required.",
+    "cta.b1":"Create a free account","cta.b2":"See the demo","cta.mini":"No setup · Instant boards · Turkish & English",
+    "foot.about":"A simple, bilingual Kanban app that helps teams organize work with boards, lists and cards.",
+    "foot.product":"Product","foot.resources":"Resources","foot.company":"Company","foot.demo":"Demo","foot.docs":"Docs",
+    "foot.aboutus":"About","foot.contact":"Contact","foot.privacy":"Privacy","foot.terms":"Terms",
+    "foot.copy":"© 2026 Nexora · Built by Nexovias."
+  };
+  var TR_META = {
+    title: document.title,
+    desc: (document.querySelector('meta[name="description"]')||{}).content || ""
+  };
+
+  var nodes = Array.prototype.slice.call(document.querySelectorAll("[data-i18n]"));
+  var orig = {};
+  nodes.forEach(function(n){
+    var k = n.getAttribute("data-i18n");
+    if(orig[k] == null){
+      orig[k] = (n.getAttribute("data-html") != null) ? n.innerHTML : n.textContent;
+    }
+  });
+
+  var CUR = "tr";
+  var metaDesc = document.querySelector('meta[name="description"]');
+
+  function translate(lang){
+    var useEN = (lang === "en");
+    document.querySelectorAll("[data-i18n]").forEach(function(n){
+      var k = n.getAttribute("data-i18n");
+      var val = useEN ? EN[k] : orig[k];
+      if(val == null) return;
+      if(n.getAttribute("data-html") != null) n.innerHTML = val; else n.textContent = val;
+    });
+    document.documentElement.lang = useEN ? "en" : "tr";
+    document.title = useEN ? (EN["meta.title"]||TR_META.title) : TR_META.title;
+    if(metaDesc) metaDesc.content = useEN ? (EN["meta.desc"]||TR_META.desc) : TR_META.desc;
+    var lbl = document.getElementById("langLbl");
+    if(lbl) lbl.textContent = useEN ? "TR" : "EN";
+    var lb = document.getElementById("langBtn");
+    if(lb) lb.setAttribute("aria-label", useEN ? "TR — Türkçeye geç" : "EN — Switch to English");
+  }
+
+  /* ---- Fiyat (USD ana + ≈TL) ---- */
+  var USDTRY = 46.8; // fallback (2026-07 civarı); canlı kur aşağıda denenir
+  function fmtTL(usd){ return "≈ ₺" + Math.round(usd*USDTRY).toLocaleString("tr-TR"); }
+  function renderPrices(){
+    var en = (CUR === "en");
+    var per = en ? " /mo" : " /ay";
+    var setupW = en ? "setup" : "kurulum";
+    // TL yaklaşık değeri yalnızca TR sürümünde gösterilir; EN'de sadece USD.
+    var tlTeam = en ? "" : "<span class=\"tl\">"+fmtTL(39)+per+"</span>";
+    var tlEnt  = en ? "" : "<span class=\"tl\">"+fmtTL(199)+"</span>";
+    var amtTeam = document.getElementById("amtTeam");
+    if(amtTeam) amtTeam.innerHTML = "$39<small>"+per+"</small>"+tlTeam;
+    var noteTeam = document.getElementById("noteTeam");
+    if(noteTeam){
+      var noteTxt = en ? "+ $159 one-time setup" : ("+ $159 tek seferlik kurulum · " + fmtTL(159));
+      noteTeam.innerHTML = '<a href="https://creem.io/product/prod_OZccvqoMZJgXMpD72ym1t" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">'+noteTxt+'</a>';
+    }
+    var amtEnt = document.getElementById("amtEnt");
+    if(amtEnt) amtEnt.innerHTML = "$199<small> "+setupW+"</small>"+tlEnt;
+    var noteEnt = document.getElementById("noteEnt");
+    if(noteEnt) noteEnt.textContent = en ? "Optional $19/mo maintenance" : ("Opsiyonel $19/ay bakım · " + fmtTL(19) + per);
+  }
+
+  function setLang(lang){
+    CUR = (lang === "en") ? "en" : "tr";
+    translate(CUR);
+    renderPrices();
+    try{ localStorage.setItem("nexora_lang", CUR); }catch(e){}
+  }
+
+  function detectLang(){
+    try{
+      var saved = localStorage.getItem("nexora_lang");
+      if(saved === "en" || saved === "tr") return saved;
+    }catch(e){}
+    try{
+      var tz = (Intl.DateTimeFormat().resolvedOptions().timeZone || "");
+      if(tz === "Europe/Istanbul") return "tr";
+      var l = (navigator.language || navigator.userLanguage || "").toLowerCase();
+      if(l.indexOf("tr") === 0) return "tr";
+    }catch(e){}
+    return "en";
+  }
+
+  setLang(detectLang());
+
+  var langBtn = document.getElementById("langBtn");
+  if(langBtn) langBtn.addEventListener("click", function(){ setLang(CUR === "en" ? "tr" : "en"); });
+
+  /* ---- Canlı kur (ücretsiz, anahtarsız). Başarısızsa fallback kalır. ---- */
+  try{
+    fetch("https://open.er-api.com/v6/latest/USD").then(function(r){ return r.json(); }).then(function(d){
+      if(d && d.rates && typeof d.rates.TRY === "number" && d.rates.TRY > 0){
+        USDTRY = d.rates.TRY; renderPrices();
+      }
+    }).catch(function(){});
+  }catch(e){}
+
+  /* ============================================================
+     Reveal (IntersectionObserver)
+     ============================================================ */
+  var reveals = Array.prototype.slice.call(document.querySelectorAll("[data-reveal]"));
+  var heroCopy = document.querySelectorAll("#hero .hero-copy [data-reveal]");
+  heroCopy.forEach(function(el,i){ el.style.transitionDelay = (0.08*i + 0.05) + "s"; });
+
+  function showAll(){ reveals.forEach(function(el){ el.classList.add("in"); }); }
+
+  if (reduce || !("IntersectionObserver" in window)) {
+    showAll();
+  } else {
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold:0.12, rootMargin:"0px 0px -7% 0px" });
+    reveals.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){
+      document.querySelectorAll("[data-reveal]:not(.in)").forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight + 200) el.classList.add("in");
+      });
+    }, 1800);
+    window.addEventListener("load", function(){ setTimeout(showAllVisible, 400); });
+    function showAllVisible(){
+      document.querySelectorAll("[data-reveal]:not(.in)").forEach(function(el){
+        var r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight) el.classList.add("in");
+      });
+    }
+  }
+
+  /* ---- Nav durum, scrollbar, parallax, to-top (native rAF) ---- */
+  var nav=document.getElementById("nav"),
+      totop=document.getElementById("totop"),
+      bar=document.getElementById("scrollbar"),
+      b1=document.getElementById("blob1"), b2=document.getElementById("blob2"),
+      ticking=false;
+  function frame(){
+    var y=window.scrollY||window.pageYOffset;
+    var h=document.documentElement.scrollHeight - window.innerHeight;
+    if(nav) nav.classList.toggle("scrolled", y>20);
+    if(totop) totop.classList.toggle("show", y>600);
+    if(bar) bar.style.width = (h>0 ? (y/h*100) : 0) + "%";
+    if(!reduce){
+      if(b1) b1.style.transform = "translateY("+(y*0.10)+"px)";
+      if(b2) b2.style.transform = "translateY("+(-y*0.08)+"px)";
+    }
+    ticking=false;
+  }
+  window.addEventListener("scroll", function(){
+    if(!ticking){ ticking=true; requestAnimationFrame(frame); }
+  }, {passive:true});
+  frame();
+  if(totop) totop.addEventListener("click", function(){ window.scrollTo({top:0,behavior:"smooth"}); });
+
+  /* ---- Mobil menü ---- */
+  var burger=document.getElementById("burger");
+  if(burger) burger.addEventListener("click", function(){
+    var links=document.querySelector(".nav-links");
+    var open = links.style.display==="flex";
+    links.style.cssText = open ? "" :
+      "display:flex;position:absolute;top:74px;left:0;right:0;flex-direction:column;gap:4px;background:var(--paper);padding:14px 24px;border-bottom:1px solid var(--line);box-shadow:var(--shadow-md);z-index:59";
+  });
+
+  /* ---- SSS akordeon: tek açık ---- */
+  var faqs=Array.prototype.slice.call(document.querySelectorAll(".faq details"));
+  faqs.forEach(function(d){ d.addEventListener("toggle", function(){
+    if(d.open) faqs.forEach(function(o){ if(o!==d) o.open=false; });
+  });});
+
+  /* ---- Motion (motiondivision/motion) — progressive enhancement ---- */
+  if(reduce) return;
+  import("https://cdn.jsdelivr.net/npm/motion@11.11.13/+esm").then(function(m){
+    var animate = m.animate;
+    if(typeof animate !== "function") return;
+    try {
+      animate("#float1",{transform:["translateY(0px)","translateY(-10px)","translateY(0px)"]},
+        {duration:5,repeat:Infinity,ease:"easeInOut"});
+      animate("#float2",{transform:["translateY(0px)","translateY(8px)","translateY(0px)"]},
+        {duration:6,repeat:Infinity,ease:"easeInOut"});
+    } catch(e){}
+
+    var drag=document.getElementById("dragCard");
+    var cols=Array.prototype.slice.call(document.querySelectorAll("#board .col"));
+    var board=document.getElementById("board");
+    if(drag && board && cols.length){
+      drag.style.opacity="0";
+      var place=function(ci,yy){
+        var c=cols[ci].getBoundingClientRect(), b=board.getBoundingClientRect();
+        return {x:c.left-b.left+10, y:c.top-b.top+40+yy};
+      };
+      var seq=[[0,60],[1,150],[2,60],[3,120]], i=0;
+      var safe=function(fn){ try{ fn(); }catch(e){} };
+      var step=function(){
+        var from=seq[i%seq.length], to=seq[(i+1)%seq.length];
+        var p0=place(from[0],from[1]), p1=place(to[0],to[1]);
+        drag.style.left=p0.x+"px"; drag.style.top=p0.y+"px";
+        safe(function(){ animate(drag,{opacity:[0,1],scale:[.9,1.03,1]},{duration:.4}); });
+        setTimeout(function(){
+          safe(function(){ animate(drag,
+            {left:[p0.x+"px",p1.x+"px"],top:[p0.y+"px",p1.y+"px"],rotate:["-4deg","3deg","-2deg"]},
+            {duration:1.1,ease:[.5,0,.2,1]}); });
+        }, 420);
+        setTimeout(function(){ safe(function(){ animate(drag,{opacity:[1,0]},{duration:.35}); }); }, 1620);
+        setTimeout(function(){ i++; step(); }, 2300);
+      };
+      setTimeout(step,1700);
+    }
+  }).catch(function(){ /* Motion yüklenmezse sorun yok; sayfa tam çalışır */ });
+})();
+</script>
+</body>
+</html>
