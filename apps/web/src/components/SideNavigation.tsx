@@ -3,9 +3,16 @@ import { useRouter } from "next/router";
 import { Button } from "@headlessui/react";
 import { t } from "@lingui/core/macro";
 import { env } from "next-runtime-env";
-import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { HiBolt } from "react-icons/hi2";
+import {
+  HiBolt,
+  HiOutlineChartBarSquare,
+  HiOutlineCog6Tooth,
+  HiOutlineInbox,
+  HiOutlineRectangleGroup,
+  HiOutlineRectangleStack,
+  HiOutlineUsers,
+} from "react-icons/hi2";
 import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarLeftExpand,
@@ -16,14 +23,7 @@ import type { Subscription } from "@kan/shared/utils";
 import { hasActiveSubscription } from "@kan/shared/utils";
 
 import type { KeyboardShortcut } from "~/providers/keyboard-shortcuts";
-import boardsIconDark from "~/assets/boards-dark.json";
-import boardsIconLight from "~/assets/boards-light.json";
-import membersIconDark from "~/assets/members-dark.json";
-import membersIconLight from "~/assets/members-light.json";
-import settingsIconDark from "~/assets/settings-dark.json";
-import settingsIconLight from "~/assets/settings-light.json";
-import templatesIconDark from "~/assets/templates-dark.json";
-import templatesIconLight from "~/assets/templates-light.json";
+import { usePermissions } from "~/hooks/usePermissions";
 import ButtonComponent from "~/components/Button";
 import ReactiveButton from "~/components/ReactiveButton";
 import UserMenu from "~/components/UserMenu";
@@ -51,6 +51,7 @@ export default function SideNavigation({
 }: SideNavigationProps) {
   const router = useRouter();
   const { workspace } = useWorkspace();
+  const { role } = usePermissions();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isInitialised, setIsInitialised] = useState(false);
 
@@ -82,22 +83,19 @@ export default function SideNavigation({
 
   const { pathname } = router;
 
-  const { resolvedTheme } = useTheme();
-
   const isCloudEnv = env("NEXT_PUBLIC_KAN_ENV") === "cloud";
 
-  const isDarkMode = resolvedTheme === "dark";
-
+  const iconClass = "h-[18px] w-[18px]";
   const navigation: {
     name: string;
     href: string;
-    icon: object;
+    icon: React.ReactNode;
     keyboardShortcut: KeyboardShortcut;
   }[] = [
     {
       name: t`Inbox`,
       href: "/inbox",
-      icon: isDarkMode ? boardsIconDark : boardsIconLight,
+      icon: <HiOutlineInbox className={iconClass} />,
       keyboardShortcut: {
         type: "SEQUENCE",
         strokes: [{ key: "G" }, { key: "I" }],
@@ -109,7 +107,7 @@ export default function SideNavigation({
     {
       name: t`Boards`,
       href: "/boards",
-      icon: isDarkMode ? boardsIconDark : boardsIconLight,
+      icon: <HiOutlineRectangleStack className={iconClass} />,
       keyboardShortcut: {
         type: "SEQUENCE",
         strokes: [{ key: "G" }, { key: "B" }],
@@ -121,7 +119,7 @@ export default function SideNavigation({
     {
       name: t`Templates`,
       href: "/templates",
-      icon: isDarkMode ? templatesIconDark : templatesIconLight,
+      icon: <HiOutlineRectangleGroup className={iconClass} />,
       keyboardShortcut: {
         type: "SEQUENCE",
         strokes: [{ key: "G" }, { key: "T" }],
@@ -133,7 +131,7 @@ export default function SideNavigation({
     {
       name: t`Members`,
       href: "/members",
-      icon: isDarkMode ? membersIconDark : membersIconLight,
+      icon: <HiOutlineUsers className={iconClass} />,
       keyboardShortcut: {
         type: "SEQUENCE",
         strokes: [{ key: "G" }, { key: "M" }],
@@ -142,10 +140,26 @@ export default function SideNavigation({
         description: t`Go to members`,
       },
     },
+    ...(role === "admin"
+      ? [
+          {
+            name: t`Analiz`,
+            href: "/analytics",
+            icon: <HiOutlineChartBarSquare className={iconClass} />,
+            keyboardShortcut: {
+              type: "SEQUENCE" as const,
+              strokes: [{ key: "G" }, { key: "A" }],
+              action: () => router.push("/analytics"),
+              group: "NAVIGATION" as const,
+              description: t`Go to analytics`,
+            },
+          },
+        ]
+      : []),
     {
       name: t`Settings`,
       href: "/settings",
-      icon: isDarkMode ? settingsIconDark : settingsIconLight,
+      icon: <HiOutlineCog6Tooth className={iconClass} />,
       keyboardShortcut: {
         type: "SEQUENCE",
         strokes: [{ key: "G" }, { key: "S" }],
@@ -207,7 +221,7 @@ export default function SideNavigation({
                   href={item.href}
                   current={pathname.includes(item.href)}
                   name={item.name}
-                  json={item.icon}
+                  icon={item.icon}
                   isCollapsed={isCollapsed}
                   onCloseSideNav={onCloseSideNav}
                   keyboardShortcut={item.keyboardShortcut}

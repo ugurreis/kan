@@ -17,7 +17,7 @@ import { imports } from "./imports";
 import { labels } from "./labels";
 import { lists } from "./lists";
 import { users } from "./users";
-import { workspaces } from "./workspaces";
+import { workspaceMembers, workspaces } from "./workspaces";
 
 export const boardVisibilityStatuses = ["private", "public"] as const;
 export type BoardVisibilityStatus = (typeof boardVisibilityStatuses)[number];
@@ -56,6 +56,7 @@ export const boards = pgTable(
     visibility: boardVisibilityEnum("visibility").notNull().default("private"),
     type: boardTypeEnum("type").notNull().default("regular"),
     isArchived: boolean("isArchived").notNull().default(false),
+    dueDate: timestamp("dueDate"),
     sourceBoardId: bigint("sourceBoardId", { mode: "number" }),
   },
   (table) => [
@@ -79,6 +80,7 @@ export const boardsRelations = relations(boards, ({ one, many }) => ({
   lists: many(lists),
   allLists: many(lists),
   labels: many(labels),
+  members: many(boardToWorkspaceMembers),
   deletedBy: one(users, {
     fields: [boards.deletedBy],
     references: [users.id],
@@ -95,6 +97,37 @@ export const boardsRelations = relations(boards, ({ one, many }) => ({
     relationName: "boardWorkspace",
   }),
 }));
+
+// Projeye (pano) atanan kişiler — proje ekibi. cardToWorkspaceMembers ile
+// aynı desende workspace üyelerine bağlanır.
+export const boardToWorkspaceMembers = pgTable(
+  "_board_workspace_members",
+  {
+    boardId: bigint("boardId", { mode: "number" })
+      .notNull()
+      .references(() => boards.id, { onDelete: "cascade" }),
+    workspaceMemberId: bigint("workspaceMemberId", { mode: "number" })
+      .notNull()
+      .references(() => workspaceMembers.id, { onDelete: "cascade" }),
+  },
+  (t) => [primaryKey({ columns: [t.boardId, t.workspaceMemberId] })],
+).enableRLS();
+
+export const boardToWorkspaceMembersRelations = relations(
+  boardToWorkspaceMembers,
+  ({ one }) => ({
+    board: one(boards, {
+      fields: [boardToWorkspaceMembers.boardId],
+      references: [boards.id],
+      relationName: "boardToWorkspaceMembersBoard",
+    }),
+    member: one(workspaceMembers, {
+      fields: [boardToWorkspaceMembers.workspaceMemberId],
+      references: [workspaceMembers.id],
+      relationName: "boardToWorkspaceMembersMember",
+    }),
+  }),
+);
 
 export const userBoardFavorites = pgTable(
   "user_board_favorites",

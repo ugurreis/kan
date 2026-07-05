@@ -122,7 +122,12 @@ export function BoardsList({ isTemplate, archived = false }: { isTemplate?: bool
           <Link
             href={`${isTemplate ? "templates" : "boards"}/${board.publicId}`}
           >
-            <div className="group relative mr-5 flex h-[150px] w-full items-center justify-center rounded-md border border-dashed border-light-400 bg-light-50 shadow-sm hover:bg-light-200 dark:border-dark-600 dark:bg-dark-50 dark:hover:bg-dark-100">
+            <div className="group relative mr-5 flex h-[150px] w-full flex-col justify-between overflow-hidden rounded-2xl bg-white p-4 ring-1 ring-light-300/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.7),0_2px_8px_-2px_rgba(16,24,40,0.06),0_16px_36px_-18px_rgba(13,148,136,0.14)] transition-all hover:-translate-y-0.5 hover:ring-brand-400/60 dark:bg-dark-50 dark:ring-dark-300">
+              {/* Landing kartlarındaki yumuşak emerald aksan */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-brand-400 to-brand-600 opacity-70"
+              />
               <PatternedBackground />
               <button
                 onClick={(e) => handleToggleFavorite(e, board.publicId, board.favorite)}
@@ -145,9 +150,14 @@ export function BoardsList({ isTemplate, archived = false }: { isTemplate?: bool
                   <HiOutlineTrash className="h-5 w-5" />
                 </button>
               )}
-              <p className="px-4 text-[14px] font-bold text-neutral-700 dark:text-dark-1000">
-                {board.name}
-              </p>
+              <div className="relative z-[1] mt-auto flex items-center gap-2.5">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400">
+                  <HiOutlineRectangleStack className="h-4 w-4" />
+                </span>
+                <p className="truncate text-[14px] font-bold text-light-1000 dark:text-dark-1000">
+                  {board.name}
+                </p>
+              </div>
             </div>
           </Link>
         </motion.div>

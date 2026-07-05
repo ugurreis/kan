@@ -204,8 +204,20 @@ export const boardRouter = createTRPCRouter({
         })),
       );
 
+      // Pano (proje) üyeleri junction'dan nested gelir; boardDetail şemasına
+      // uyacak şekilde {publicId, email, user} olarak düzleştir.
+      const projectMembers = await Promise.all(
+        result.members.map(async (bm) => {
+          const m = bm.member;
+          if (!m.user?.image) return m;
+          const avatarUrl = await generateAvatarUrl(m.user.image);
+          return { ...m, user: { ...m.user, image: avatarUrl } };
+        }),
+      );
+
       return {
         ...result,
+        members: projectMembers,
         lists: listsWithAvatarUrls,
         workspace: workspaceWithAvatarUrls,
       };
@@ -302,6 +314,8 @@ export const boardRouter = createTRPCRouter({
         labels: z.array(z.string().min(1)),
         type: z.enum(["regular", "template"]).optional(),
         sourceBoardPublicId: z.string().min(12).optional(),
+        dueDate: z.date().nullish(),
+        memberPublicIds: z.array(z.string()).optional(),
       }),
     )
     .output(boardCreateResponseSchema)
@@ -393,6 +407,31 @@ export const boardRouter = createTRPCRouter({
           sourceBoardId: sourceBoardInfo.id,
         });
 
+        // Şablondan oluşturulan panoya proje deadline'ı uygula
+        if (input.dueDate !== undefined && input.dueDate !== null && result) {
+          await boardRepo.update(ctx.db, {
+            name: undefined,
+            slug: undefined,
+            visibility: undefined,
+            boardPublicId: result.publicId,
+            dueDate: input.dueDate,
+          });
+        }
+
+        // Proje ekibi (atanan üyeler)
+        if (result && input.memberPublicIds?.length) {
+          const created = await boardRepo.getIdByPublicId(
+            ctx.db,
+            result.publicId,
+          );
+          if (created)
+            await boardRepo.setBoardMembers(
+              ctx.db,
+              created.id,
+              input.memberPublicIds,
+            );
+        }
+
         return result;
       }
 
@@ -414,7 +453,17 @@ export const boardRouter = createTRPCRouter({
         createdBy: userId,
         workspaceId: workspace.id,
         type: input.type,
+        dueDate: input.dueDate ?? null,
       });
+
+      // Proje ekibi (atanan üyeler)
+      if (result && input.memberPublicIds?.length) {
+        await boardRepo.setBoardMembers(
+          ctx.db,
+          result.id,
+          input.memberPublicIds,
+        );
+      }
 
       if (!result)
         throw new TRPCError({
@@ -472,6 +521,7 @@ export const boardRouter = createTRPCRouter({
         visibility: z.enum(["public", "private"]).optional(),
         favorite: z.boolean().optional(),
         isArchived: z.boolean().optional(),
+        dueDate: z.date().nullish(),
       }),
     )
     .output(boardUpdateResponseSchema)
@@ -512,8 +562,13 @@ export const boardRouter = createTRPCRouter({
         }
       }
 
-      // Handle other updates (name, slug, visibility)
-      const hasOtherUpdates = input.name || input.slug || input.visibility !== undefined || input.isArchived !== undefined;
+      // Handle other updates (name, slug, visibility, dueDate)
+      const hasOtherUpdates =
+        input.name ||
+        input.slug ||
+        input.visibility !== undefined ||
+        input.isArchived !== undefined ||
+        input.dueDate !== undefined;
 
       if (!hasOtherUpdates) {
         // Only favorite was updated, return success
@@ -541,6 +596,7 @@ export const boardRouter = createTRPCRouter({
         boardPublicId: input.boardPublicId,
         visibility: input.visibility,
         isArchived: input.isArchived,
+        dueDate: input.dueDate,
       });
 
       if (!result)

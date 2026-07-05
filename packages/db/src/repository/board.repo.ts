@@ -16,6 +16,7 @@ import type { dbClient } from "@kan/db/client";
 import type { BoardVisibilityStatus } from "@kan/db/schema";
 import {
   boards,
+  boardToWorkspaceMembers,
   cardActivities,
   cardAttachments,
   cards,
@@ -198,12 +199,34 @@ export const getByPublicId = async (
       slug: true,
       visibility: true,
       isArchived: true,
+      dueDate: true,
     },
     with: {
       userFavorites: {
         where: eq(userBoardFavorites.userId, userId),
         columns: {
           userId: true,
+        },
+      },
+      members: {
+        with: {
+          member: {
+            columns: {
+              publicId: true,
+              email: true,
+              deletedAt: true,
+            },
+            with: {
+              user: {
+                columns: {
+                  id: true,
+                  name: true,
+                  email: true,
+                  image: true,
+                },
+              },
+            },
+          },
         },
       },
       workspace: {
@@ -609,6 +632,7 @@ export const create = async (
     slug: string;
     type?: "regular" | "template";
     sourceBoardId?: number;
+    dueDate?: Date | null;
   },
 ) => {
   const [result] = await db
@@ -622,6 +646,7 @@ export const create = async (
       slug: boardInput.slug,
       type: boardInput.type ?? "regular",
       sourceBoardId: boardInput.sourceBoardId,
+      dueDate: boardInput.dueDate ?? null,
     })
     .returning({
       id: boards.id,
@@ -640,6 +665,7 @@ export const update = async (
     visibility: BoardVisibilityStatus | undefined;
     boardPublicId: string;
     isArchived?: boolean;
+    dueDate?: Date | null;
   },
 ) => {
   const [result] = await db
@@ -649,7 +675,8 @@ export const update = async (
       slug: boardInput.slug,
       visibility: boardInput.visibility,
       updatedAt: new Date(),
-      ...(boardInput.isArchived !== undefined && { isArchived: boardInput.isArchived })
+      ...(boardInput.isArchived !== undefined && { isArchived: boardInput.isArchived }),
+      ...(boardInput.dueDate !== undefined && { dueDate: boardInput.dueDate }),
     })
     .where(eq(boards.publicId, boardInput.boardPublicId))
     .returning({
@@ -658,6 +685,27 @@ export const update = async (
     });
 
   return result;
+};
+
+// Projeye (pano) workspace üyeleri atar. publicId'leri iç id'lere çözer.
+export const setBoardMembers = async (
+  db: dbClient,
+  boardId: number,
+  workspaceMemberPublicIds: string[],
+) => {
+  if (workspaceMemberPublicIds.length === 0) return;
+
+  const members = await db.query.workspaceMembers.findMany({
+    columns: { id: true },
+    where: inArray(workspaceMembers.publicId, workspaceMemberPublicIds),
+  });
+
+  if (members.length === 0) return;
+
+  await db
+    .insert(boardToWorkspaceMembers)
+    .values(members.map((m) => ({ boardId, workspaceMemberId: m.id })))
+    .onConflictDoNothing();
 };
 
 export const softDelete = async (

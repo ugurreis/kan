@@ -56,7 +56,9 @@ export const boardDetailSchema = z.object({
   slug: z.string(),
   visibility: z.string(),
   isArchived: z.boolean(),
+  dueDate: z.date().nullable(),
   favorite: z.boolean(),
+  members: z.array(boardCardMemberSchema),
   workspace: z.object({
     publicId: z.string(),
     cardPrefix: z.string(),

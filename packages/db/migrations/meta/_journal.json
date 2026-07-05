@@ -267,6 +267,13 @@
       "when": 1783178727502,
       "tag": "20260704152527_AddInboxItems",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1783253678813,
+      "tag": "20260705121438_AddBoardDueDateAndProjectMembers",
+      "breakpoints": true
     }
   ]
 }

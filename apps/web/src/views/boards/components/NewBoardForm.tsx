@@ -23,12 +23,14 @@ const schema = z.object({
     .max(100, { message: t`Pano adı 100 karakteri geçemez` }),
   workspacePublicId: z.string(),
   template: z.custom<Template | null>(),
+  dueDate: z.string().optional(),
 });
 
 interface NewBoardInputWithTemplate {
   name: string;
   workspacePublicId: string;
   template: Template | null;
+  dueDate?: string;
 }
 
 export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
@@ -38,10 +40,34 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
   const { showPopup } = usePopup();
   const { workspace } = useWorkspace();
   const [showTemplates, setShowTemplates] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const { data: templates } = api.board.all.useQuery(
     { workspacePublicId: workspace.publicId ?? "", type: "template" },
     { enabled: !!workspace.publicId },
   );
+  const { data: wsData } = api.workspace.byId.useQuery(
+    { workspacePublicId: workspace.publicId ?? "" },
+    { enabled: !!workspace.publicId && workspace.publicId.length >= 12 },
+  );
+  const members = (wsData?.members ?? []).filter(
+    (m) => m.status === "active",
+  );
+
+  const toggleMember = (publicId: string) =>
+    setSelectedMembers((prev) =>
+      prev.includes(publicId)
+        ? prev.filter((id) => id !== publicId)
+        : [...prev, publicId],
+    );
+
+  const memberInitials = (name?: string | null, email?: string) => {
+    const src = name?.trim() || email?.split("@")[0] || "?";
+    return src
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? "")
+      .join("");
+  };
 
   const formattedTemplates = templates?.map((template) => ({
     id: template.publicId,
@@ -63,6 +89,7 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
       name: "",
       workspacePublicId: workspace.publicId || "",
       template: null,
+      dueDate: "",
     },
   });
 
@@ -104,6 +131,8 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
       lists: data.template?.lists ?? [],
       labels: data.template?.labels ?? [],
       type: isTemplate ? "template" : "regular",
+      dueDate: data.dueDate ? new Date(data.dueDate) : null,
+      memberPublicIds: selectedMembers,
     });
   };
 
@@ -141,6 +170,51 @@ export function NewBoardForm({ isTemplate }: { isTemplate?: boolean }) {
             }
           }}
         />
+        {!isTemplate && (
+          <div className="mt-4">
+            <label
+              htmlFor="dueDate"
+              className="mb-1.5 block text-sm font-medium text-light-900 dark:text-dark-900"
+            >
+              {t`Proje teslim tarihi (opsiyonel)`}
+            </label>
+            <input
+              id="dueDate"
+              type="date"
+              {...register("dueDate")}
+              className="w-full rounded-md border-0 bg-light-50 px-3 py-2 text-sm text-light-1000 shadow-sm ring-1 ring-inset ring-light-300 focus:ring-2 focus:ring-inset focus:ring-brand-500 dark:bg-dark-50 dark:text-dark-1000 dark:ring-dark-300 [color-scheme:light] dark:[color-scheme:dark]"
+            />
+          </div>
+        )}
+        {!isTemplate && members.length > 0 && (
+          <div className="mt-4">
+            <label className="mb-1.5 block text-sm font-medium text-light-900 dark:text-dark-900">
+              {t`Proje ekibi (opsiyonel)`}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {members.map((m) => {
+                const selected = selectedMembers.includes(m.publicId);
+                return (
+                  <button
+                    key={m.publicId}
+                    type="button"
+                    onClick={() => toggleMember(m.publicId)}
+                    className={`flex items-center gap-2 rounded-full py-1 pl-1 pr-3 text-sm ring-1 transition-colors ${
+                      selected
+                        ? "bg-brand-500/10 text-brand-700 ring-brand-400 dark:text-brand-300"
+                        : "bg-light-50 text-light-1000 ring-light-300 hover:ring-brand-400 dark:bg-dark-50 dark:text-dark-1000 dark:ring-dark-300"
+                    }`}
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand-500 text-[10px] font-bold text-white">
+                      {memberInitials(m.user?.name, m.email)}
+                    </span>
+                    {m.user?.name ?? m.email}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
       <TemplateBoards
         currentBoard={currentTemplate}

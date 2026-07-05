@@ -20,6 +20,7 @@ import { useModal } from "~/providers/modal";
 import { useWorkspace } from "~/providers/workspace";
 import { DeleteBoardConfirmation } from "../board/components/DeleteBoardConfirmation";
 import { BoardsList } from "./components/BoardsList";
+import { DashboardOverview } from "./components/DashboardOverview";
 import { ImportBoardsForm } from "./components/ImportBoardsForm";
 import { NewBoardForm } from "./components/NewBoardForm";
 
@@ -48,10 +49,17 @@ export default function BoardsPage({ isTemplate }: { isTemplate?: boolean }) {
       <PageHead
         title={`${isTemplate ? t`Şablonlar` : t`Panolar`} | ${workspace.name ?? t`Çalışma alanı`}`}
       />
-      <div className="m-auto h-full max-w-[1100px] p-8 px-5 md:px-28 md:py-12">
+      <div className="relative min-h-full w-full bg-gradient-to-b from-[#dfe9e5] via-[#e7efec] to-[#d8e6e0] dark:from-dark-100 dark:via-dark-50 dark:to-dark-100">
+        {/* Landing'in yumuşak emerald yıkaması — düz beyaz parlamayı kırar */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(1100px_480px_at_100%_-8%,rgba(13,148,136,0.16),transparent_60%),radial-gradient(820px_460px_at_-6%_2%,rgba(20,184,166,0.11),transparent_55%)]"
+        />
+        <div className="relative z-[1] m-auto h-full w-full max-w-[1400px] p-6 px-5 md:px-10 md:py-10">
+          {!isTemplate && <DashboardOverview />}
         <div className="relative z-10 mb-8 flex w-full items-center justify-between">
           <h1 className="font-bold tracking-tight text-neutral-900 dark:text-dark-1000 sm:text-[1.2rem]">
-            {isTemplate ? t`Şablonlar` : t`Panolar`}
+            {isTemplate ? t`Şablonlar` : t`Panolarım`}
           </h1>
           <div className="flex gap-2">
             {!isTemplate && (
@@ -212,6 +220,7 @@ export default function BoardsPage({ isTemplate }: { isTemplate?: boolean }) {
             <BoardsList isTemplate={!!isTemplate} />
           </div>
         )}
+        </div>
       </div>
     </>
   );

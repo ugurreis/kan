@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 import type { KeyboardShortcut } from "~/providers/keyboard-shortcuts";
-import LottieIcon from "~/components/LottieIcon";
 import { useIsMobile } from "~/hooks/useMediaQuery";
 import { useKeyboardShortcut } from "~/providers/keyboard-shortcuts";
 
@@ -11,7 +9,7 @@ const Button: React.FC<{
   href: string;
   current: boolean;
   name: string;
-  json: object;
+  icon: React.ReactNode;
   isCollapsed?: boolean;
   onCloseSideNav?: () => void;
   keyboardShortcut: KeyboardShortcut;
@@ -19,20 +17,13 @@ const Button: React.FC<{
   href,
   current,
   name,
-  json,
+  icon,
   isCollapsed = false,
   keyboardShortcut,
   onCloseSideNav,
 }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [index, setIndex] = useState(0);
   const isMobile = useIsMobile();
   const { keys: shortcutKeys } = useKeyboardShortcut(keyboardShortcut);
-
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-    setIndex((index) => index + 1);
-  };
 
   const handleClick = () => {
     if (onCloseSideNav && isMobile) {
@@ -43,7 +34,6 @@ const Button: React.FC<{
   return (
     <Link
       href={href}
-      onMouseEnter={handleMouseEnter}
       onClick={handleClick}
       className={twMerge(
         "group flex h-[34px] items-center rounded-md p-1.5 text-sm font-normal leading-6 hover:bg-light-200 hover:text-light-1000 dark:hover:bg-dark-200 dark:hover:text-dark-1000",
@@ -62,7 +52,10 @@ const Button: React.FC<{
             : "gap-x-3",
         )}
       >
-        <LottieIcon index={index} json={json} isPlaying={isHovered} />
+        {/* Statik ikon (animasyon kaldırıldı) */}
+        <span className="flex h-[18px] w-[18px] shrink-0 items-center justify-center">
+          {icon}
+        </span>
         <span className={twMerge(isCollapsed && "md:hidden")}>{name}</span>
       </div>
       {!isCollapsed && (
