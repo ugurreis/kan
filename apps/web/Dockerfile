@@ -34,7 +34,7 @@ RUN git fetch --tags --unshallow 2>/dev/null || git fetch --tags 2>/dev/null || 
     echo "unknown") && \
     echo "$AUTO_VERSION" > /app/AUTO_VERSION
 
-RUN turbo prune --scope=@kan/web --scope=@kan/db --docker
+RUN turbo prune --scope=@kan/web --scope=@kan/db --scope=@kan/inbox-worker --docker
 
 # ============================================
 # Stage 3: Install dependencies
@@ -122,3 +122,17 @@ USER 1000:1000
 
 EXPOSE 3000
 CMD ["bootstrap.cjs"]
+
+# ============================================
+# Stage 7: Inbox email-gateway worker (runs from source via tsx)
+# ============================================
+FROM alpine AS inbox-worker
+WORKDIR /app
+
+COPY --from=deps /app/ ./
+COPY --from=pruner /app/out/full/ .
+
+ENV CI=true
+ENV NODE_ENV=production
+
+CMD ["pnpm", "--filter", "@kan/inbox-worker", "start"]

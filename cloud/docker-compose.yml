@@ -116,6 +116,32 @@ services:
       migrator:
         condition: service_completed_successfully
 
+  inbox-worker:
+    image: ghcr.io/kanbn/kan-inbox-worker:latest
+    container_name: ${CONTAINER_NAME:-kan-inbox-worker}
+    build:
+      context: ..
+      dockerfile: apps/web/Dockerfile
+      target: inbox-worker
+    networks:
+      - dokploy-network
+    env_file:
+      - .env
+    restart: unless-stopped
+    environment:
+      - POSTGRES_URL=${POSTGRES_URL}
+      - INBOX_EMAIL_DOMAIN=${INBOX_EMAIL_DOMAIN}
+      - INBOX_IMAP_HOST=${INBOX_IMAP_HOST}
+      - INBOX_IMAP_PORT=${INBOX_IMAP_PORT}
+      - INBOX_IMAP_USER=${INBOX_IMAP_USER}
+      - INBOX_IMAP_PASSWORD=${INBOX_IMAP_PASSWORD}
+      - INBOX_POLL_SECONDS=${INBOX_POLL_SECONDS}
+      - INBOX_REQUIRE_FROM_MATCH=${INBOX_REQUIRE_FROM_MATCH}
+      - INBOX_MAX_ITEMS_PER_USER_PER_HOUR=${INBOX_MAX_ITEMS_PER_USER_PER_HOUR}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
 networks:
   dokploy-network:
     external: true
