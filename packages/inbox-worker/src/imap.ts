@@ -33,7 +33,13 @@ export async function runOnce(
 
     for (const uid of uids) {
       const message = await client.fetchOne(uid, { source: true });
-      if (!message || !message.source) continue;
+      if (!message || !message.source) {
+        // Poison message: no fetchable source. Mark \Seen anyway so it does
+        // not resurface on every search({ seen: false }) as an infinite retry.
+        logger.warn({ uid }, "email dropped: no source; marking seen to avoid retry loop");
+        await client.messageFlagsAdd(uid, ["\\Seen"], { uid: true });
+        continue;
+      }
 
       const parsed = await simpleParser(message.source);
       const incoming: IncomingMessage = {
