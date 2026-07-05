@@ -28,11 +28,16 @@ export async function runOnce(
 ): Promise<void> {
   const lock = await client.getMailboxLock("INBOX");
   try {
-    const uids = await client.search({ seen: false });
+    // UID-based addressing: search/fetch/flag MUST all use UIDs consistently.
+    // Plain SEARCH returns sequence numbers, which diverge from UIDs after any
+    // expunge; feeding a seq number to UID STORE (messageFlagsAdd { uid: true })
+    // would flag the wrong message, leaving the processed one unseen (infinite
+    // reprocessing + duplicates) and silently marking an unrelated message seen.
+    const uids = await client.search({ seen: false }, { uid: true });
     if (!uids || uids.length === 0) return;
 
     for (const uid of uids) {
-      const message = await client.fetchOne(uid, { source: true });
+      const message = await client.fetchOne(uid, { source: true }, { uid: true });
       if (!message || !message.source) {
         // Poison message: no fetchable source. Mark \Seen anyway so it does
         // not resurface on every search({ seen: false }) as an infinite retry.
@@ -81,5 +86,17 @@ function firstHeader(value: unknown): string | null {
   if (!value) return null;
   if (typeof value === "string") return value;
   if (Array.isArray(value) && typeof value[0] === "string") return value[0];
+  // mailparser parses address-type headers (e.g. Delivered-To) into an
+  // AddressObject { value, html, text } rather than a raw string, so the plain
+  // string checks above miss it and the header is lost. Pull the .text form,
+  // which parseRecipientToken scans for the inbox+<token>@ address.
+  if (
+    typeof value === "object" &&
+    value !== null &&
+    "text" in value &&
+    typeof (value as { text: unknown }).text === "string"
+  ) {
+    return (value as { text: string }).text;
+  }
   return null;
 }
