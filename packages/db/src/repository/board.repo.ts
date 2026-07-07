@@ -1139,3 +1139,61 @@ export const removeUserFavorite = async (
     )
     .returning();
 };
+
+export const getAssignableContextByUserId = async (
+  db: dbClient,
+  userId: string,
+) => {
+  const workspaceRows = await db.query.workspaceMembers.findMany({
+    columns: { workspaceId: true },
+    where: and(
+      eq(workspaceMembers.userId, userId),
+      eq(workspaceMembers.status, "active"),
+      isNull(workspaceMembers.deletedAt),
+    ),
+  });
+
+  const workspaceIds = workspaceRows.map((row) => row.workspaceId);
+  if (workspaceIds.length === 0) return [];
+
+  const boardRows = await db.query.boards.findMany({
+    columns: { publicId: true, name: true },
+    where: and(
+      inArray(boards.workspaceId, workspaceIds),
+      isNull(boards.deletedAt),
+      eq(boards.type, "regular"),
+    ),
+    with: {
+      lists: {
+        columns: { publicId: true },
+        where: isNull(lists.deletedAt),
+        orderBy: [asc(lists.index)],
+        limit: 1,
+      },
+      members: {
+        with: {
+          member: {
+            columns: { publicId: true, deletedAt: true },
+            with: {
+              user: {
+                columns: { name: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return boardRows.map((board) => ({
+    boardPublicId: board.publicId,
+    boardName: board.name,
+    firstListPublicId: board.lists[0]?.publicId ?? null,
+    members: board.members
+      .filter((bm) => bm.member.deletedAt === null && bm.member.user?.name)
+      .map((bm) => ({
+        memberPublicId: bm.member.publicId,
+        name: bm.member.user!.name,
+      })),
+  }));
+};
