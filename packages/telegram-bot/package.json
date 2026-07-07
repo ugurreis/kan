@@ -1,0 +1,26 @@
+{
+  "name": "@kan/telegram-bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.110.0",
+    "@kan/db": "workspace:*",
+    "@kan/logger": "workspace:^",
+    "@kan/shared": "workspace:^",
+    "grammy": "^1.44.0",
+    "openai": "^6.45.0"
+  },
+  "devDependencies": {
+    "@kan/tsconfig": "workspace:*",
+    "tsx": "^4.19.2",
+    "typescript": "catalog:",
+    "vitest": "^3.0.0"
+  }
+}
