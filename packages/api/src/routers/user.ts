@@ -2,7 +2,8 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import * as userRepo from "@kan/db/repository/user.repo";
-import { generateAvatarUrl, generateInboxEmailToken } from "@kan/shared/utils";
+import * as telegramLinkRepo from "@kan/db/repository/telegramLink.repo";
+import { generateAvatarUrl, generateInboxEmailToken, generateTelegramLinkToken } from "@kan/shared/utils";
 
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
@@ -207,5 +208,60 @@ export const userRouter = createTRPCRouter({
 
       const domain = process.env.INBOX_EMAIL_DOMAIN ?? "nexovias.com";
       return { email: `inbox+${token}@${domain}` };
+    }),
+  getTelegramLinkStatus: protectedProcedure
+    .input(z.void())
+    .output(z.object({ linked: z.boolean() }))
+    .query(async ({ ctx }) => {
+      const userId = ctx.user?.id;
+      if (!userId)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+
+      const link = await telegramLinkRepo.getLinkByUserId(ctx.db, userId);
+      return { linked: !!link };
+    }),
+  generateTelegramLinkToken: protectedProcedure
+    .input(z.void())
+    .output(z.object({ url: z.string() }))
+    .mutation(async ({ ctx }) => {
+      const userId = ctx.user?.id;
+      if (!userId)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+
+      const botUsername = process.env.TELEGRAM_BOT_USERNAME;
+      if (!botUsername)
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Telegram integration is not configured",
+        });
+
+      const token = generateTelegramLinkToken();
+      await telegramLinkRepo.createLinkToken(ctx.db, {
+        userId,
+        token,
+        expiresAt: new Date(Date.now() + 10 * 60 * 1000), // 10 dakika
+      });
+
+      return { url: `https://t.me/${botUsername}?start=${token}` };
+    }),
+  disconnectTelegram: protectedProcedure
+    .input(z.void())
+    .output(z.object({ success: z.boolean() }))
+    .mutation(async ({ ctx }) => {
+      const userId = ctx.user?.id;
+      if (!userId)
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
+
+      await telegramLinkRepo.deleteByUserId(ctx.db, userId);
+      return { success: true };
     }),
 });
