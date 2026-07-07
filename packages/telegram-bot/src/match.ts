@@ -29,13 +29,15 @@ export function matchOne(
   const normalizedGuess = guess ? normalize(guess) : "";
   if (!normalizedGuess || candidates.length === 0) return null;
 
-  const matches = candidates.filter((candidate) => {
-    const normalizedName = normalize(candidate.name);
-    return (
-      normalizedName.includes(normalizedGuess) ||
-      normalizedGuess.includes(normalizedName)
-    );
-  });
+  const matches = candidates
+    .filter((candidate) => normalize(candidate.name).length > 0)
+    .filter((candidate) => {
+      const normalizedName = normalize(candidate.name);
+      return (
+        normalizedName.includes(normalizedGuess) ||
+        normalizedGuess.includes(normalizedName)
+      );
+    });
 
   return matches.length === 1 ? matches[0]!.id : null;
 }

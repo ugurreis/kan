@@ -40,4 +40,12 @@ describe("matchOne", () => {
   it("returns null on empty candidate list", () => {
     expect(matchOne("TT", [])).toBeNull();
   });
+
+  it("never matches a candidate with an empty/blank normalized name", () => {
+    const withBlank = [
+      { id: "b1", name: "Zeynep Holding" },
+      { id: "b2", name: "   " },
+    ];
+    expect(matchOne("bambaşka bir metin", withBlank)).toBeNull();
+  });
 });
