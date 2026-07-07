@@ -56,3 +56,6 @@ i18n.cache
 /apps/web/pgdata
 
 .claude
+
+# git worktrees (superpowers:using-git-worktrees)
+.worktrees
