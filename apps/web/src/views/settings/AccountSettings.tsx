@@ -23,6 +23,24 @@ export default function AccountSettings() {
     env("NEXT_PUBLIC_ALLOW_CREDENTIALS")?.toLowerCase() === "true";
   const { data } = api.user.getUser.useQuery();
   const { data: inboxEmail } = api.user.getInboxEmail.useQuery();
+  const { data: telegramStatus, refetch: refetchTelegramStatus } =
+    api.user.getTelegramLinkStatus.useQuery();
+  const generateTelegramLink = api.user.generateTelegramLinkToken.useMutation({
+    onSuccess: (result) => {
+      window.open(result.url, "_blank", "noopener,noreferrer");
+    },
+    onError: () =>
+      showPopup({
+        header: t`Could not connect Telegram`,
+        message: t`Please try again.`,
+        icon: "error",
+      }),
+  });
+  const disconnectTelegram = api.user.disconnectTelegram.useMutation({
+    onSuccess: async () => {
+      await refetchTelegramStatus();
+    },
+  });
 
   const copyInboxEmail = async () => {
     if (!inboxEmail?.email) return;
@@ -78,6 +96,39 @@ export default function AccountSettings() {
               {t`Copy`}
             </Button>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <h2 className="mb-4 mt-8 text-[14px] font-bold text-neutral-900 dark:text-dark-1000">
+            {t`Telegram`}
+          </h2>
+          <p className="mb-2 text-sm text-neutral-500 dark:text-dark-900">
+            {t`Connect Telegram to create tasks by leaving a voice message.`}
+          </p>
+          {telegramStatus?.linked ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-neutral-700 dark:text-dark-900">
+                {t`Connected ✓`}
+              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                isLoading={disconnectTelegram.isPending}
+                onClick={() => disconnectTelegram.mutate()}
+              >
+                {t`Disconnect`}
+              </Button>
+            </div>
+          ) : (
+            <Button
+              variant="secondary"
+              size="sm"
+              isLoading={generateTelegramLink.isPending}
+              onClick={() => generateTelegramLink.mutate()}
+            >
+              {t`Connect Telegram`}
+            </Button>
+          )}
         </div>
 
         <div className="mb-8 border-t border-light-300 dark:border-dark-300">
