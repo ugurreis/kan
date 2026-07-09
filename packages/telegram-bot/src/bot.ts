@@ -52,6 +52,19 @@ export function createBot(db: dbClient, config: WorkerConfig): Bot {
       return;
     }
 
+    const since = new Date(Date.now() - 60 * 60 * 1000);
+    const recentCount = await telegramLinkRepo.countPendingBatchesCreatedSince(
+      db,
+      link.userId,
+      since,
+    );
+    if (recentCount >= config.telegramMaxVoiceMessagesPerHour) {
+      await ctx.reply(
+        "Bu saat için sesli komut limitine ulaştın, biraz sonra tekrar dener misin?",
+      );
+      return;
+    }
+
     await ctx.reply("Dinliyorum, bir saniye...");
 
     try {

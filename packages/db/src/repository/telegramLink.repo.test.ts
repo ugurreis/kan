@@ -50,6 +50,58 @@ describe("telegramLink.repo", () => {
   });
 });
 
+describe("telegramLink.repo — rate limiting", () => {
+  let userId: string;
+
+  beforeAll(async () => {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: randomUUID(),
+        name: "Test User",
+        email: `test-${randomUUID()}@example.com`,
+        emailVerified: false,
+      })
+      .returning({ id: users.id });
+    userId = user!.id;
+  });
+
+  afterAll(async () => {
+    await db.delete(users).where(eq(users.id, userId));
+  });
+
+  it("countPendingBatchesCreatedSince counts only batches created since the cutoff", async () => {
+    const since = new Date(Date.now() - 60 * 60 * 1000);
+
+    await telegramLinkRepo.createPendingBatch(db, {
+      userId,
+      payload: JSON.stringify([{ title: "recent-1" }]),
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+    await telegramLinkRepo.createPendingBatch(db, {
+      userId,
+      payload: JSON.stringify([{ title: "recent-2" }]),
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+
+    const countSinceOneHourAgo =
+      await telegramLinkRepo.countPendingBatchesCreatedSince(
+        db,
+        userId,
+        since,
+      );
+    expect(countSinceOneHourAgo).toBe(2);
+
+    const countSinceFuture =
+      await telegramLinkRepo.countPendingBatchesCreatedSince(
+        db,
+        userId,
+        new Date(Date.now() + 60_000),
+      );
+    expect(countSinceFuture).toBe(0);
+  });
+});
+
 describe("telegramLink.repo — link tokens", () => {
   let userId: string;
 

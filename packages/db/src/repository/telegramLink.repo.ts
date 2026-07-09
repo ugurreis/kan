@@ -1,4 +1,4 @@
-import { and, eq, gt, isNull } from "drizzle-orm";
+import { and, count, eq, gt, gte, isNull } from "drizzle-orm";
 
 import type { dbClient } from "@kan/db/client";
 import {
@@ -69,6 +69,24 @@ export const createPendingBatch = async (
     .returning({ publicId: telegramPendingTaskBatches.publicId });
 
   return result;
+};
+
+export const countPendingBatchesCreatedSince = async (
+  db: dbClient,
+  userId: string,
+  since: Date,
+) => {
+  const [row] = await db
+    .select({ count: count() })
+    .from(telegramPendingTaskBatches)
+    .where(
+      and(
+        eq(telegramPendingTaskBatches.userId, userId),
+        gte(telegramPendingTaskBatches.createdAt, since),
+      ),
+    );
+
+  return row?.count ?? 0;
 };
 
 export const getPendingBatch = async (db: dbClient, publicId: string) => {
