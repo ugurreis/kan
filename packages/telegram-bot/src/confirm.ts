@@ -40,22 +40,64 @@ export async function cancelBatch(
 export async function confirmBatch(
   db: dbClient,
   batchPublicId: string,
-): Promise<{ status: BatchStatus; createdCount: number; inboxCount: number }> {
+): Promise<{
+  status: BatchStatus;
+  createdCount: number;
+  inboxCount: number;
+  failedCount: number;
+}> {
   const result = await consumeOrStatus(db, batchPublicId);
-  if (!result.ok) return { status: result.status, createdCount: 0, inboxCount: 0 };
+  if (!result.ok)
+    return { status: result.status, createdCount: 0, inboxCount: 0, failedCount: 0 };
 
   let createdCount = 0;
   let inboxCount = 0;
+  let failedCount = 0;
 
   for (const task of result.resolved) {
-    const dueDate = task.dueDateISO ? new Date(task.dueDateISO) : null;
+    try {
+      const dueDate = task.dueDateISO ? new Date(task.dueDateISO) : null;
 
-    if (task.boardPublicId && task.listPublicId) {
-      const listInfo = await listRepo.getWorkspaceAndListIdByListPublicId(
-        db,
-        task.listPublicId,
-      );
-      if (!listInfo) {
+      if (task.boardPublicId && task.listPublicId) {
+        const listInfo = await listRepo.getWorkspaceAndListIdByListPublicId(
+          db,
+          task.listPublicId,
+        );
+        if (!listInfo) {
+          inboxCount += 1;
+          await inboxItemRepo.create(db, {
+            userId: result.userId,
+            title: task.title,
+            description: task.description,
+            dueDate,
+            source: "manual",
+          });
+          continue;
+        }
+
+        const newCard = await cardRepo.create(db, {
+          title: task.title,
+          description: task.description ?? "",
+          createdBy: result.userId,
+          listId: listInfo.id,
+          workspaceId: listInfo.workspaceId,
+          position: "end",
+          dueDate,
+        });
+        createdCount += 1;
+
+        if (task.assigneePublicId) {
+          const member = await workspaceRepo.getMemberByPublicId(
+            db,
+            task.assigneePublicId,
+          );
+          if (member) {
+            await cardRepo.bulkCreateCardWorkspaceMemberRelationships(db, [
+              { cardId: newCard.id, workspaceMemberId: member.id },
+            ]);
+          }
+        }
+      } else {
         inboxCount += 1;
         await inboxItemRepo.create(db, {
           userId: result.userId,
@@ -64,42 +106,12 @@ export async function confirmBatch(
           dueDate,
           source: "manual",
         });
-        continue;
       }
-
-      const newCard = await cardRepo.create(db, {
-        title: task.title,
-        description: task.description ?? "",
-        createdBy: result.userId,
-        listId: listInfo.id,
-        workspaceId: listInfo.workspaceId,
-        position: "end",
-        dueDate,
-      });
-      createdCount += 1;
-
-      if (task.assigneePublicId) {
-        const member = await workspaceRepo.getMemberByPublicId(
-          db,
-          task.assigneePublicId,
-        );
-        if (member) {
-          await cardRepo.bulkCreateCardWorkspaceMemberRelationships(db, [
-            { cardId: newCard.id, workspaceMemberId: member.id },
-          ]);
-        }
-      }
-    } else {
-      inboxCount += 1;
-      await inboxItemRepo.create(db, {
-        userId: result.userId,
-        title: task.title,
-        description: task.description,
-        dueDate,
-        source: "manual",
-      });
+    } catch {
+      failedCount += 1;
+      continue;
     }
   }
 
-  return { status: "confirmed", createdCount, inboxCount };
+  return { status: "confirmed", createdCount, inboxCount, failedCount };
 }

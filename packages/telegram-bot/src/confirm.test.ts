@@ -101,11 +101,62 @@ describe("confirmBatch", () => {
       status: "confirmed",
       createdCount: 1,
       inboxCount: 1,
+      failedCount: 0,
     });
     expect(cardRepo.bulkCreateCardWorkspaceMemberRelationships).toHaveBeenCalledWith(
       mockDb,
       [{ cardId: 1, workspaceMemberId: 42 }],
     );
+  });
+
+  it("isolates a per-task failure so the other task in the batch still gets created", async () => {
+    const resolved = [
+      {
+        title: "Görev A (başarısız olacak)",
+        description: null,
+        dueDateISO: null,
+        boardPublicId: "brd1",
+        listPublicId: "lst1",
+        boardName: "TT Firması",
+        assigneePublicId: null,
+        assigneeName: null,
+      },
+      {
+        title: "Görev B (başarılı)",
+        description: null,
+        dueDateISO: null,
+        boardPublicId: "brd1",
+        listPublicId: "lst1",
+        boardName: "TT Firması",
+        assigneePublicId: null,
+        assigneeName: null,
+      },
+    ];
+    (
+      telegramLinkRepo.consumePendingBatch as ReturnType<typeof vi.fn>
+    ).mockResolvedValueOnce({
+      userId: "user-1",
+      payload: JSON.stringify(resolved),
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+    (
+      listRepo.getWorkspaceAndListIdByListPublicId as ReturnType<typeof vi.fn>
+    )
+      .mockResolvedValueOnce({ id: 5, workspaceId: 9 })
+      .mockResolvedValueOnce({ id: 5, workspaceId: 9 });
+    (cardRepo.create as ReturnType<typeof vi.fn>)
+      .mockRejectedValueOnce(new Error("list was deleted"))
+      .mockResolvedValueOnce({ id: 2, publicId: "crd2" });
+
+    const result = await confirmBatch(mockDb, "batch1");
+
+    expect(result).toEqual({
+      status: "confirmed",
+      createdCount: 1,
+      inboxCount: 0,
+      failedCount: 1,
+    });
+    expect(cardRepo.create).toHaveBeenCalledTimes(2);
   });
 });
 
