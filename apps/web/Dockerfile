@@ -34,7 +34,7 @@ RUN git fetch --tags --unshallow 2>/dev/null || git fetch --tags 2>/dev/null || 
     echo "unknown") && \
     echo "$AUTO_VERSION" > /app/AUTO_VERSION
 
-RUN turbo prune --scope=@kan/web --scope=@kan/db --scope=@kan/inbox-worker --docker
+RUN turbo prune --scope=@kan/web --scope=@kan/db --scope=@kan/inbox-worker --scope=@kan/telegram-bot --docker
 
 # ============================================
 # Stage 3: Install dependencies
@@ -141,3 +141,21 @@ ENV NODE_ENV=production
 USER node
 
 CMD ["pnpm", "--filter", "@kan/inbox-worker", "start"]
+
+# ============================================
+# Stage 8: Telegram sesli görev botu (runs from source via tsx)
+# ============================================
+FROM alpine AS telegram-bot
+WORKDIR /app
+
+COPY --chown=node:node --from=deps /app/ ./
+COPY --chown=node:node --from=pruner /app/out/full/ .
+
+ENV CI=true
+ENV NODE_ENV=production
+
+# Untrusted sesli mesaj içeriği işleyen bileşen — inbox-worker stage'iyle aynı
+# gerekçeyle root çalıştırılmaz.
+USER node
+
+CMD ["pnpm", "--filter", "@kan/telegram-bot", "start"]
