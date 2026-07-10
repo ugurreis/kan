@@ -154,3 +154,37 @@ describe("telegramLink.repo — link tokens", () => {
     expect(result).toBeUndefined();
   });
 });
+
+describe("telegramLink.repo — locale", () => {
+  let userId: string;
+
+  beforeAll(async () => {
+    const [user] = await db
+      .insert(users)
+      .values({
+        id: randomUUID(),
+        name: "Test User",
+        email: `test-${randomUUID()}@example.com`,
+        emailVerified: false,
+      })
+      .returning({ id: users.id });
+    userId = user!.id;
+  });
+
+  afterAll(async () => {
+    await db.delete(users).where(eq(users.id, userId));
+  });
+
+  it("getLinkByChatId returns null locale for a link with no locale set, then updateLocaleByUserId persists it", async () => {
+    const chatId = BigInt(Date.now());
+    await telegramLinkRepo.upsertLink(db, { userId, telegramChatId: chatId });
+
+    const beforeUpdate = await telegramLinkRepo.getLinkByChatId(db, chatId);
+    expect(beforeUpdate?.locale).toBeNull();
+
+    await telegramLinkRepo.updateLocaleByUserId(db, userId, "en");
+
+    const afterUpdate = await telegramLinkRepo.getLinkByChatId(db, chatId);
+    expect(afterUpdate?.locale).toBe("en");
+  });
+});

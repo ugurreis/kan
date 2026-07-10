@@ -20,7 +20,7 @@ export const getLinkByChatId = async (
   telegramChatId: bigint,
 ) => {
   return db.query.telegramLinks.findFirst({
-    columns: { userId: true },
+    columns: { userId: true, locale: true },
     where: eq(telegramLinks.telegramChatId, telegramChatId),
   });
 };
@@ -142,6 +142,20 @@ export const consumeLinkToken = async (db: dbClient, token: string) => {
       ),
     )
     .returning({ userId: telegramLinkTokens.userId });
+
+  return result;
+};
+
+export const updateLocaleByUserId = async (
+  db: dbClient,
+  userId: string,
+  locale: "tr" | "en",
+) => {
+  const [result] = await db
+    .update(telegramLinks)
+    .set({ locale })
+    .where(eq(telegramLinks.userId, userId))
+    .returning({ userId: telegramLinks.userId });
 
   return result;
 };
