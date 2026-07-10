@@ -22,6 +22,7 @@ export const telegramLinks = pgTable("telegram_link", {
   telegramChatId: bigint("telegramChatId", { mode: "bigint" })
     .notNull()
     .unique(),
+  locale: varchar("locale", { length: 2 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 }).enableRLS();
 

@@ -1,0 +1,1 @@
+ALTER TABLE "telegram_link" ADD COLUMN "locale" varchar(2);
