@@ -155,6 +155,7 @@ services:
       - .env
     restart: unless-stopped
     environment:
+      - SERVICE_FQDN_TELEGRAM_BOT_8090=${SERVICE_FQDN_TELEGRAM_BOT_8090}
       - POSTGRES_URL=${POSTGRES_URL}
       - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
       - TELEGRAM_WEBHOOK_SECRET=${TELEGRAM_WEBHOOK_SECRET}
