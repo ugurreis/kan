@@ -61,6 +61,13 @@ describe("resolveAndPersist", () => {
         assigneeName: "Ahmet Yılmaz",
       },
     ]);
+
+    const persistedPayload = JSON.parse(
+      (telegramLinkRepo.createPendingBatch as ReturnType<typeof vi.fn>).mock
+        .calls[0]![1].payload,
+    );
+    expect(persistedPayload.transcript).toBe("TT firmasına çekim, hemen");
+    expect(persistedPayload.resolved).toEqual(result?.resolved);
   });
 
   it("leaves board/assignee null when the name is ambiguous or unmatched", async () => {

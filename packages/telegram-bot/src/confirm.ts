@@ -9,11 +9,16 @@ import type { ResolvedTask } from "./resolveAndPersist";
 
 type BatchStatus = "expired" | "already-consumed" | "confirmed" | "cancelled";
 
+interface BatchPayload {
+  resolved: ResolvedTask[];
+  transcript: string;
+}
+
 async function consumeOrStatus(
   db: dbClient,
   batchPublicId: string,
 ): Promise<
-  | { ok: true; userId: string; resolved: ResolvedTask[] }
+  | { ok: true; userId: string; resolved: ResolvedTask[]; transcript: string }
   | { ok: false; status: BatchStatus }
 > {
   const consumed = await telegramLinkRepo.consumePendingBatch(db, batchPublicId);
@@ -21,10 +26,13 @@ async function consumeOrStatus(
   if (consumed.expiresAt.getTime() < Date.now())
     return { ok: false, status: "expired" };
 
+  const payload = JSON.parse(consumed.payload) as BatchPayload;
+
   return {
     ok: true,
     userId: consumed.userId,
-    resolved: JSON.parse(consumed.payload) as ResolvedTask[],
+    resolved: payload.resolved,
+    transcript: payload.transcript,
   };
 }
 
@@ -45,10 +53,21 @@ export async function confirmBatch(
   createdCount: number;
   inboxCount: number;
   failedCount: number;
+  userId: string | null;
+  resolved: ResolvedTask[];
+  transcript: string | null;
 }> {
   const result = await consumeOrStatus(db, batchPublicId);
   if (!result.ok)
-    return { status: result.status, createdCount: 0, inboxCount: 0, failedCount: 0 };
+    return {
+      status: result.status,
+      createdCount: 0,
+      inboxCount: 0,
+      failedCount: 0,
+      userId: null,
+      resolved: [],
+      transcript: null,
+    };
 
   let createdCount = 0;
   let inboxCount = 0;
@@ -113,5 +132,13 @@ export async function confirmBatch(
     }
   }
 
-  return { status: "confirmed", createdCount, inboxCount, failedCount };
+  return {
+    status: "confirmed",
+    createdCount,
+    inboxCount,
+    failedCount,
+    userId: result.userId,
+    resolved: result.resolved,
+    transcript: result.transcript,
+  };
 }

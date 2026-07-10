@@ -78,7 +78,7 @@ describe("confirmBatch", () => {
       telegramLinkRepo.consumePendingBatch as ReturnType<typeof vi.fn>
     ).mockResolvedValueOnce({
       userId: "user-1",
-      payload: JSON.stringify(resolved),
+      payload: JSON.stringify({ resolved, transcript: "yarın çekim var" }),
       expiresAt: new Date(Date.now() + 60_000),
     });
     (
@@ -102,6 +102,9 @@ describe("confirmBatch", () => {
       createdCount: 1,
       inboxCount: 1,
       failedCount: 0,
+      userId: "user-1",
+      resolved,
+      transcript: "yarın çekim var",
     });
     expect(cardRepo.bulkCreateCardWorkspaceMemberRelationships).toHaveBeenCalledWith(
       mockDb,
@@ -136,7 +139,7 @@ describe("confirmBatch", () => {
       telegramLinkRepo.consumePendingBatch as ReturnType<typeof vi.fn>
     ).mockResolvedValueOnce({
       userId: "user-1",
-      payload: JSON.stringify(resolved),
+      payload: JSON.stringify({ resolved, transcript: "iki görev söyledim" }),
       expiresAt: new Date(Date.now() + 60_000),
     });
     (
@@ -155,6 +158,9 @@ describe("confirmBatch", () => {
       createdCount: 1,
       inboxCount: 0,
       failedCount: 1,
+      userId: "user-1",
+      resolved,
+      transcript: "iki görev söyledim",
     });
     expect(cardRepo.create).toHaveBeenCalledTimes(2);
   });

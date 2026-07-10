@@ -76,7 +76,7 @@ export async function resolveAndPersist(
 
   const batch = await telegramLinkRepo.createPendingBatch(db, {
     userId: input.userId,
-    payload: JSON.stringify(resolved),
+    payload: JSON.stringify({ resolved, transcript: input.transcript }),
     expiresAt: new Date(Date.now() + PENDING_BATCH_TTL_MS),
   });
 
