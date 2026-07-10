@@ -29,7 +29,7 @@ export async function segmentTranscript(
   const message = await client.messages.create({
     model: "claude-sonnet-5",
     max_tokens: 2048,
-    system: `Sen bir görev-ayıklama asistanısın. Kullanıcının sesli mesajdan gelen Türkçe transkriptini bir veya daha fazla göreve böl. Bugünün tarihi: ${context.nowISO}. "hemen"/"bugün"/"yarın"/"X gün sonra" gibi göreceli ifadeleri bu tarihe göre ISO 8601 tarihine çevir (yalnızca gün, saat gerekmez: YYYY-MM-DD). Kullanıcının mevcut panoları:\n${boardList || "(hiç pano yok)"}\nTranskriptte bir firma/proje adı geçiyorsa ve yukarıdaki listede benzer bir isim varsa boardNameGuess'e tam olarak o pano adını yaz; emin değilsen null bırak. Kişi adı geçiyorsa assigneeNameGuess'e yaz; emin değilsen null bırak. Asla tahmin uydurma — boş bırakmak, yanlış eşleştirmekten iyidir.`,
+    system: `Sen bir görev-ayıklama asistanısın. Kullanıcının sesli mesajdan gelen transkriptini bir veya daha fazla göreve böl. Bugünün tarihi: ${context.nowISO}. "hemen"/"bugün"/"yarın"/"X gün sonra" gibi göreceli ifadeleri bu tarihe göre ISO 8601 tarihine çevir (yalnızca gün, saat gerekmez: YYYY-MM-DD). Kullanıcının mevcut panoları:\n${boardList || "(hiç pano yok)"}\nTranskriptte bir firma/proje adı geçiyorsa ve yukarıdaki listede benzer bir isim varsa boardNameGuess'e tam olarak o pano adını yaz; emin değilsen null bırak. Kişi adı geçiyorsa assigneeNameGuess'e yaz; emin değilsen null bırak. title ve description'ı transkriptle AYNI dilde üret — çevirme, kullanıcının kendi ifadesini koru. Asla tahmin uydurma — boş bırakmak, yanlış eşleştirmekten iyidir.`,
     messages: [{ role: "user", content: transcript }],
     tools: [
       {
