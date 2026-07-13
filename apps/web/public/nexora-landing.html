@@ -298,8 +298,13 @@ section{position:relative}
 
 /* Fiyatlandırma */
 .price-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:stretch}
-@media(max-width:1100px){.price-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1200px){.price-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.price-grid{grid-template-columns:1fr}}
+.billing-toggle{display:inline-flex;align-items:center;gap:4px;padding:4px;border-radius:999px;background:var(--surface2,#eef2f0);margin:0 auto 28px;border:1px solid rgba(0,0,0,.06)}
+.billing-toggle button{border:0;background:transparent;padding:8px 18px;border-radius:999px;font-weight:600;font-size:14px;cursor:pointer;color:inherit;opacity:.6}
+.billing-toggle button.active{background:#0d9488;color:#fff;opacity:1}
+.billing-toggle .save{font-size:11px;font-weight:700;color:#0d9488;margin-left:4px}
+.billing-toggle button.active .save{color:#c8fff2}
 .plan{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);padding:30px;box-shadow:var(--shadow-sm);display:flex;flex-direction:column}
 .plan.pop{border-color:var(--brand);box-shadow:var(--shadow-brand);position:relative;transform:translateY(-6px)}
 .plan.pop .badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--brand-600),var(--brand));
@@ -800,7 +805,7 @@ section{position:relative}
           <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n2">Baştan sona gerçek Türkçe & İngilizce</span></li>
           <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n3">Örnek kartlarla dolu hazır şablonlar</span></li>
           <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n4">İhtiyacınız kadar özellik, fazlası değil</span></li>
-          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n5">Kendi sunucunuzda, KVKK uyumlu</span></li>
+          <li><span class="ic"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="cmp.n5">KVKK uyumlu, güvenli barındırma</span></li>
         </ul>
       </div>
     </div>
@@ -814,6 +819,10 @@ section{position:relative}
       <span class="eyebrow"><span class="dot"></span><span data-i18n="price.eyebrow">Fiyatlandırma</span></span>
       <h2 class="section-title" style="margin-top:16px" data-i18n="price.h2">Basit, öngörülebilir.</h2>
       <p class="lede" style="margin-inline:auto" data-i18n="price.lede">Gizli ücret yok, kurulum ücreti yok. Kişi başı aylık faturalama.</p>
+      <div class="billing-toggle" role="group" aria-label="Faturalama periyodu">
+        <button type="button" id="billMonthly" data-i18n="bill.monthly">Aylık</button>
+        <button type="button" id="billYearly" class="active" data-i18n="bill.yearly">Yıllık <span class="save" data-i18n="bill.save">%20 indirim</span></button>
+      </div>
     </div>
     <div class="price-grid">
       <div class="plan" data-reveal>
@@ -838,6 +847,7 @@ section{position:relative}
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f2">Takvim görünümü</span></li>
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f3">Roller, yetkiler, Webhook & API</span></li>
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f4">Ekip performans analitiği</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f5">Otomasyon: liste kurallarıyla etiket/atama</span></li>
         </ul>
         <a href="https://creem.io/product/prod_1gfYwTVMdG1ouyePaXo5P5" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="p2.btn">Standart'la başla</a>
       </div>
@@ -857,15 +867,15 @@ section{position:relative}
       </div>
       <div class="plan" data-reveal>
         <h3 data-i18n="p3.h">Kurumsal</h3>
-        <div class="amt" id="amtEnt"></div>
-        <p class="amt-note" id="noteEnt"></p>
-        <p class="desc" data-i18n="p3.desc">Kendi sunucunuzda, kendi alan adınızda.</p>
+        <div class="amt" data-i18n="p3.amt">Talebe özel</div>
+        <p class="amt-note" data-i18n="p3.note">Fiyat ihtiyacınıza göre oluşturulur</p>
+        <p class="desc" data-i18n="p3.desc">Premium'un hepsi + özel ihtiyaçlarınıza göre şekillenen anlaşma.</p>
         <ul>
-          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f1">Tek kiracılı kurulum</span></li>
-          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f2">Beyaz etiket markalama</span></li>
-          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f3">KVKK uyumlu tam veri sahipliği</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f1">Premium'ın tüm özellikleri</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f2">Sınırsız kullanıcı, özel sözleşme</span></li>
+          <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p3.f3">Öncelikli destek & kurulum danışmanlığı</span></li>
         </ul>
-        <a href="https://creem.io/product/prod_zabn1XQX5E2JPCem2sCt7" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="p3.btn">Kuruluma başla</a>
+        <a href="mailto:info@nexovias.com?subject=Nexora%20Kurumsal%20Teklif%20Talebi" class="btn btn-ghost" data-i18n="p3.btn">İletişime geçin</a>
       </div>
     </div>
   </div>
@@ -938,8 +948,8 @@ section{position:relative}
       </details>
       <details class="qa" data-reveal>
         <summary><span data-i18n="faq.q4">Verilerim nerede saklanıyor?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
-        <div class="a" data-i18n="faq.a4">Kurumsal planda Nexora kendi sunucunuzda tek kiracılı olarak çalışır. Verileriniz
-          sizde kalır ve KVKK uyumludur.</div>
+        <div class="a" data-i18n="faq.a4">Verileriniz bizim güvenli sunucularımızda barınır, biz yedekleriz ve güncelleriz.
+          KVKK uyumlu şekilde saklanır, üçüncü taraflarla paylaşılmaz.</div>
       </details>
       <details class="qa" data-reveal>
         <summary><span data-i18n="faq.q5">Ekibimi nasıl davet ederim?</span> <span class="plus"><svg width="14" height="14" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.4" fill="none"><path d="M12 5v14M5 12h14"/></svg></span></summary>
@@ -1081,18 +1091,18 @@ section{position:relative}
     "cmp.eyebrow":"The difference","cmp.h2":"Leave complex tools behind.","cmp.lede":"Instead of drowning in dozens of features, focus on the work you actually do.",
     "cmp.oldh":"Complex tools",
     "cmp.o1":"An interface that takes days to learn","cmp.o2":"Half-baked localization","cmp.o3":"Left alone with an empty board","cmp.o4":"Hundreds of settings you never use","cmp.o5":"Your data on someone else's server",
-    "cmp.n1":"Clarity you get in the first minute","cmp.n2":"Real Turkish & English, end to end","cmp.n3":"Ready templates full of example cards","cmp.n4":"As many features as you need, no more","cmp.n5":"On your own server, KVKK/GDPR-friendly",
+    "cmp.n1":"Clarity you get in the first minute","cmp.n2":"Real Turkish & English, end to end","cmp.n3":"Ready templates full of example cards","cmp.n4":"As many features as you need, no more","cmp.n5":"KVKK/GDPR-friendly, secure hosting",
     "price.eyebrow":"Pricing","price.h2":"Simple, predictable.","price.lede":"No hidden fees, no setup fee. Per-user monthly billing.",
     "p.badge":"Most popular",
     "p1.h":"Get started","p1.amt":"14 days<small> free</small>","p1.note":"No credit card","p1.desc":"For those who want to try — a ready demo environment.",
     "p1.f1":"Try every feature","p1.f2":"Templates & example cards","p1.f3":"No setup required","p1.btn":"Try the demo",
     "p2.h":"Standard","p2.desc":"Per user, monthly. Unlimited boards and cards.",
-    "p2.f1":"Unlimited boards & cards","p2.f2":"Calendar view","p2.f3":"Roles, permissions, Webhook & API","p2.f4":"Team performance analytics","p2.btn":"Start with Standard",
+    "p2.f1":"Unlimited boards & cards","p2.f2":"Calendar view","p2.f3":"Roles, permissions, Webhook & API","p2.f4":"Team performance analytics","p2.f5":"Automation: list rules for labels/assignment","p2.btn":"Start with Standard",
     "p2b.h":"Premium","p2b.desc":"Everything in Standard, plus Telegram and AI.",
     "p2b.f1":"Voice tasks via Telegram","p2b.f2":"AI-generated card descriptions","p2b.f3":"All Standard features","p2b.f4":"Priority support","p2b.btn":"Start with Premium",
-    "p3.h":"Enterprise","p3.desc":"On your own server, your own domain.",
-    "p3.f1":"Single-tenant install","p3.f2":"White-label branding","p3.f3":"Full data ownership, KVKK/GDPR",
-    "p3.btn":"Get set up",
+    "p3.h":"Enterprise","p3.amt":"Custom","p3.note":"Priced to your needs","p3.desc":"Everything in Premium, plus a deal shaped around your needs.",
+    "p3.f1":"All Premium features","p3.f2":"Unlimited users, custom contract","p3.f3":"Priority support & onboarding consulting","p3.btn":"Get in touch",
+    "bill.monthly":"Monthly","bill.yearly":"Yearly","bill.save":"save 20%",
     "q.eyebrow":"What users say","q.h2":"Teams love Nexora.",
     "q1.p":"Our team moved from Trello; being in Turkish and templates arriving ready made a difference from day one. Now we see who's doing what at a glance.","q1.r":"Agency Founder",
     "q2.p":"Thanks to completion marking and the activity feed, our weekly meetings got cut in half. Simple, yet exactly as powerful as we need.","q2.r":"Software Team Lead",
@@ -1101,7 +1111,7 @@ section{position:relative}
     "faq.q1":"Do I have to start from scratch?","faq.a1":"No. 10 ready templates come with example cards. Pick one and the board opens already filled; you never set anything up from zero.",
     "faq.q2":"Can I move my boards from another app?","faq.a2":"There's direct import from Trello and GitHub. On Asana, Monday or Notion, you can quickly recreate the equivalent with a template or migrate via Trello.",
     "faq.q3":"Does it support Turkish and English?","faq.a3":"Yes. Turkish is the default — menus, notifications and dates included. You can switch to English in one click from settings.",
-    "faq.q4":"Where is my data stored?","faq.a4":"On the Enterprise plan, Nexora runs single-tenant on your own server. Your data stays with you and is KVKK/GDPR-friendly.",
+    "faq.q4":"Where is my data stored?","faq.a4":"Your data lives on our secure servers -- we back it up and keep it updated. It's stored in a KVKK/GDPR-friendly way and never shared with third parties.",
     "faq.q5":"How do I invite my team?","faq.a5":"Send email invites from the Members page and assign a role (admin, member, guest). Invited people see boards in real time.",
     "cta.h2":"Start today.<br>Ship tomorrow.","cta.p":"With Nexora your team gets organized in minutes. No credit card required.",
     "cta.b1":"Create a free account","cta.b2":"See the demo","cta.mini":"No setup · Instant boards · Turkish & English",
@@ -1125,6 +1135,7 @@ section{position:relative}
   });
 
   var CUR = "tr";
+  var BILLING = "yearly";
   var metaDesc = document.querySelector('meta[name="description"]');
 
   function translate(lang){
@@ -1146,28 +1157,39 @@ section{position:relative}
 
   /* ---- Fiyat (USD ana + ≈TL) ---- */
   var USDTRY = 46.8; // fallback (2026-07 civarı); canlı kur aşağıda denenir
+  var PRICES = {
+    monthly: { std: 7.5, prem: 13 },
+    yearly:  { std: 6,   prem: 10.5 }
+  };
   function fmtTL(usd){ return "≈ ₺" + Math.round(usd*USDTRY).toLocaleString("tr-TR"); }
+  function fmtUsd(n){ return (n % 1 === 0) ? String(n) : n.toFixed(2).replace(/0$/,""); }
   function renderPrices(){
     var en = (CUR === "en");
-    var per = en ? " /mo" : " /ay";
     var perUser = en ? " /user/mo" : " /kişi/ay";
-    var setupW = en ? "setup" : "kurulum";
+    var p = PRICES[BILLING];
+    var noteTxt = BILLING === "yearly"
+      ? (en ? "No setup fee · billed yearly" : "Kurulum ücreti yok · yıllık faturalanır")
+      : (en ? "No setup fee" : "Kurulum ücreti yok");
     // TL yaklaşık değeri yalnızca TR sürümünde gösterilir; EN'de sadece USD.
-    var tlStd  = en ? "" : "<span class=\"tl\">"+fmtTL(7)+perUser+"</span>";
-    var tlPrem = en ? "" : "<span class=\"tl\">"+fmtTL(12)+perUser+"</span>";
-    var tlEnt  = en ? "" : "<span class=\"tl\">"+fmtTL(199)+"</span>";
+    var tlStd  = en ? "" : "<span class=\"tl\">"+fmtTL(p.std)+perUser+"</span>";
+    var tlPrem = en ? "" : "<span class=\"tl\">"+fmtTL(p.prem)+perUser+"</span>";
     var amtStd = document.getElementById("amtStd");
-    if(amtStd) amtStd.innerHTML = "$7<small>"+perUser+"</small>"+tlStd;
+    if(amtStd) amtStd.innerHTML = "$"+fmtUsd(p.std)+"<small>"+perUser+"</small>"+tlStd;
     var noteStd = document.getElementById("noteStd");
-    if(noteStd) noteStd.textContent = en ? "No setup fee" : "Kurulum ücreti yok";
+    if(noteStd) noteStd.textContent = noteTxt;
     var amtPrem = document.getElementById("amtPrem");
-    if(amtPrem) amtPrem.innerHTML = "$12<small>"+perUser+"</small>"+tlPrem;
+    if(amtPrem) amtPrem.innerHTML = "$"+fmtUsd(p.prem)+"<small>"+perUser+"</small>"+tlPrem;
     var notePrem = document.getElementById("notePrem");
-    if(notePrem) notePrem.textContent = en ? "No setup fee" : "Kurulum ücreti yok";
-    var amtEnt = document.getElementById("amtEnt");
-    if(amtEnt) amtEnt.innerHTML = "$199<small> "+setupW+"</small>"+tlEnt;
-    var noteEnt = document.getElementById("noteEnt");
-    if(noteEnt) noteEnt.textContent = en ? "Optional $19/mo maintenance" : ("Opsiyonel $19/ay bakım · " + fmtTL(19) + per);
+    if(notePrem) notePrem.textContent = noteTxt;
+  }
+
+  function setBilling(period){
+    BILLING = (period === "yearly") ? "yearly" : "monthly";
+    var m = document.getElementById("billMonthly"), y = document.getElementById("billYearly");
+    if(m) m.classList.toggle("active", BILLING === "monthly");
+    if(y) y.classList.toggle("active", BILLING === "yearly");
+    renderPrices();
+    try{ localStorage.setItem("nexora_billing", BILLING); }catch(e){}
   }
 
   function setLang(lang){
@@ -1192,9 +1214,19 @@ section{position:relative}
   }
 
   setLang(detectLang());
+  (function(){
+    var savedBilling = "yearly";
+    try{ var sb = localStorage.getItem("nexora_billing"); if(sb === "monthly") savedBilling = "monthly"; }catch(e){}
+    setBilling(savedBilling);
+  })();
 
   var langBtn = document.getElementById("langBtn");
   if(langBtn) langBtn.addEventListener("click", function(){ setLang(CUR === "en" ? "tr" : "en"); });
+
+  var billMonthlyBtn = document.getElementById("billMonthly");
+  var billYearlyBtn = document.getElementById("billYearly");
+  if(billMonthlyBtn) billMonthlyBtn.addEventListener("click", function(){ setBilling("monthly"); });
+  if(billYearlyBtn) billYearlyBtn.addEventListener("click", function(){ setBilling("yearly"); });
 
   /* ---- Canlı kur (ücretsiz, anahtarsız). Başarısızsa fallback kalır. ---- */
   try{
