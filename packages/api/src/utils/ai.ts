@@ -11,13 +11,13 @@ const redis = getRedisClient();
 const aiDescriptionRateLimiter = redis
   ? new RateLimiterRedis({
       storeClient: redis,
-      points: 20,
-      duration: 60 * 60,
+      points: 7,
+      duration: 60 * 60 * 24,
       keyPrefix: "ai_description",
     })
   : new RateLimiterMemory({
-      points: 20,
-      duration: 60 * 60,
+      points: 7,
+      duration: 60 * 60 * 24,
       keyPrefix: "ai_description",
     });
 

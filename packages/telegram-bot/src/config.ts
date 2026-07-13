@@ -4,7 +4,7 @@ export interface WorkerConfig {
   openaiApiKey: string;
   anthropicApiKey: string;
   port: number;
-  telegramMaxVoiceMessagesPerHour: number;
+  telegramMaxVoiceMessagesPerDay: number;
   enabled: boolean;
 }
 
@@ -25,9 +25,9 @@ export function loadConfig(): WorkerConfig {
     openaiApiKey,
     anthropicApiKey,
     port: positiveIntEnv(process.env.PORT, 8090),
-    telegramMaxVoiceMessagesPerHour: positiveIntEnv(
-      process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_HOUR,
-      20,
+    telegramMaxVoiceMessagesPerDay: positiveIntEnv(
+      process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_DAY,
+      7,
     ),
     enabled: Boolean(
       telegramBotToken && telegramWebhookSecret && openaiApiKey && anthropicApiKey,

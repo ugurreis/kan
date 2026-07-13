@@ -8,7 +8,7 @@ const ENV_KEYS = [
   "OPENAI_API_KEY",
   "ANTHROPIC_API_KEY",
   "PORT",
-  "TELEGRAM_MAX_VOICE_MESSAGES_PER_HOUR",
+  "TELEGRAM_MAX_VOICE_MESSAGES_PER_DAY",
 ] as const;
 
 describe("loadConfig", () => {
@@ -47,16 +47,16 @@ describe("loadConfig", () => {
   });
 
   it("falls back to default voice message rate limit when unset", () => {
-    expect(loadConfig().telegramMaxVoiceMessagesPerHour).toBe(20);
+    expect(loadConfig().telegramMaxVoiceMessagesPerDay).toBe(7);
   });
 
   it("falls back to default voice message rate limit on non-numeric value", () => {
-    process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_HOUR = "not-a-number";
-    expect(loadConfig().telegramMaxVoiceMessagesPerHour).toBe(20);
+    process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_DAY = "not-a-number";
+    expect(loadConfig().telegramMaxVoiceMessagesPerDay).toBe(7);
   });
 
   it("uses configured voice message rate limit when set", () => {
-    process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_HOUR = "5";
-    expect(loadConfig().telegramMaxVoiceMessagesPerHour).toBe(5);
+    process.env.TELEGRAM_MAX_VOICE_MESSAGES_PER_DAY = "5";
+    expect(loadConfig().telegramMaxVoiceMessagesPerDay).toBe(5);
   });
 });

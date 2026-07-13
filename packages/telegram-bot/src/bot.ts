@@ -44,13 +44,13 @@ export function createBot(db: dbClient, config: WorkerConfig): Bot {
       return;
     }
 
-    const since = new Date(Date.now() - 60 * 60 * 1000);
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const recentCount = await telegramLinkRepo.countPendingBatchesCreatedSince(
       db,
       link.userId,
       since,
     );
-    if (recentCount >= config.telegramMaxVoiceMessagesPerHour) {
+    if (recentCount >= config.telegramMaxVoiceMessagesPerDay) {
       await ctx.reply(t("rateLimited", link.locale as "tr" | "en" | null));
       return;
     }
