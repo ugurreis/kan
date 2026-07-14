@@ -92,7 +92,7 @@ const Card = ({
               e.stopPropagation();
               onToggleComplete();
             }}
-            className="mt-0.5 flex-shrink-0 text-light-700 transition-colors hover:text-emerald-600 dark:text-dark-800 dark:hover:text-emerald-500"
+            className="relative mt-0.5 flex-shrink-0 text-light-700 transition-colors before:absolute before:-inset-2 before:content-[''] hover:text-emerald-600 dark:text-dark-800 dark:hover:text-emerald-500 md:before:hidden"
           >
             {completed ? (
               <HiCheckCircle className="h-[18px] w-[18px] text-emerald-600 dark:text-emerald-500" />

@@ -185,7 +185,8 @@ export default function Dashboard({
           <button
             ref={sideNavButtonRef}
             onClick={toggleSideNav}
-            className="rounded p-1.5 transition-all hover:bg-light-200 dark:hover:bg-dark-100"
+            aria-label={isSideNavOpen ? t`Close menu` : t`Open menu`}
+            className="flex h-11 w-11 items-center justify-center rounded transition-all hover:bg-light-200 dark:hover:bg-dark-100"
           >
             {isSideNavOpen ? (
               <TbLayoutSidebarLeftCollapse
@@ -204,7 +205,8 @@ export default function Dashboard({
             <button
               ref={rightPanelButtonRef}
               onClick={toggleRightPanel}
-              className="rounded p-1.5 transition-all hover:bg-light-200 dark:hover:bg-dark-100"
+              aria-label={isRightPanelOpen ? t`Close details` : t`Open details`}
+              className="flex h-11 w-11 items-center justify-center rounded transition-all hover:bg-light-200 dark:hover:bg-dark-100"
             >
               {isRightPanelOpen ? (
                 <TbLayoutSidebarRightCollapse

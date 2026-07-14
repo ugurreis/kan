@@ -30,19 +30,23 @@ const Button = ({
 }: ButtonProps) => {
   const classes = twMerge(
     "inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-sm font-semibold text-light-50 shadow-sm focus-visible:outline-none",
+    // Mobile: >=44px touch target height (WCAG 2.5.5 / HIG). Desktop keeps original height via md:.
+    "min-h-[44px] md:min-h-0",
     size === "xs" && "text-xs px-2 py-1",
     size === "sm" && "text-xs",
     size === "lg" && "py-[0.65rem]",
     fullWidth && "w-full",
     iconOnly && "p-0",
+    // Mobile: ensure a >=44px touch target (WCAG/HIG). Desktop keeps original size via md:.
+    iconOnly && "h-11 w-11",
     iconOnly &&
       (size === "xs"
-        ? "h-6 w-6"
+        ? "md:h-6 md:w-6"
         : size === "sm"
-          ? "h-8 w-8"
+          ? "md:h-8 md:w-8"
           : size === "lg"
-            ? "h-10 w-10"
-            : "h-9 w-9"),
+            ? "md:h-10 md:w-10"
+            : "md:h-9 md:w-9"),
     variant === "primary" &&
       "bg-brand-700 text-white hover:bg-brand-800 focus-visible:ring-2 focus-visible:ring-nexo-cyan dark:bg-brand-500 dark:text-dark-50 dark:hover:bg-brand-400",
     variant === "secondary" &&

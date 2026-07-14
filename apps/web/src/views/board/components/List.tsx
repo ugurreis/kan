@@ -118,7 +118,7 @@ export default function List({
                 }
               >
                 <button
-                  className="mx-1 inline-flex h-fit items-center rounded-md p-1 px-1 text-sm font-semibold text-dark-50 hover:bg-light-400 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-dark-200"
+                  className="relative mx-1 inline-flex h-fit items-center rounded-md p-1 px-1 text-sm font-semibold text-dark-50 before:absolute before:-inset-y-2 before:-inset-x-1 before:content-[''] hover:bg-light-400 disabled:cursor-not-allowed disabled:opacity-60 dark:hover:bg-dark-200 md:before:hidden"
                   onClick={() => openNewCardForm(list.publicId)}
                   disabled={!canCreateCard}
                 >
