@@ -27,8 +27,21 @@
 - **#5 Billing:** Stripe→Creem tekilleştirme + tek Creem adapter'ı **platform/ödeme kanonu** kararı. Landing ham Creem linkleri mi kalır, app Creem adapter'ına mı taşınır — `feat/creem-billing-adapter-phase-a` branch'iyle koordinasyon gerekir. **Rapor ediyorum, onay bekliyorum.**
 - **#9 i18n TR pipeline:** TR'yi lingo.dev hedeflerine eklemek platform i18n akışını etkiler (🟡).
 
-## Aşama 2 — canlı görsel sweep (BEKLİYOR, dev sunucusu gerekir)
-360/390/büyük-mobil/tablet-portrait/tablet-landscape/küçük-laptop/desktop/geniş × light/dark × TR/EN: yatay overflow, kırılan nav, taşan metin, dokunma hedefleri, modal/drawer, tablo, grafik okunabilirliği, sticky/safe-area, loading/empty/error/success. **Not:** açık PR #3 `fix/mobile-horizontal-overflow` landing yatay overflow'unu zaten ele alıyor — tekrar çözülmeyecek, doğrulanacak.
+## Aşama 2 — sweep bulguları (statik landing yapısal; app canlı BEKLİYOR)
+
+**Landing (servis edilen müşteri ana sayfası) — `[Doğrulandı: evaluate_script + PR #3 diff]`**
+| Bulgu | Kanıt | Sınıf | Önem |
+|---|---|---|---|
+| **Yatay overflow** — `body{overflow-x:hidden}` var ama `html{overflow-x:visible}`; `.marquee-track` (~4000px) ve `.board-glow` (inset −6% yanlar) viewport'u aşıyor. | evaluate: htmlOX visible, offender `marquee-track`/`board-glow`; `nexora-landing.html` CSS | 🟢 | High — **ANCAK açık PR #3 tam bunu düzeltiyor** (`.board-glow` inset viewport-içi, `.marquee{overflow:hidden}`). Yeni iş yok → PR #3 merge/doğrula. |
+| Viewport `initial-scale=1`, `maximum-scale` YOK → zoom serbest (app'ten farklı, iyi). | `<meta viewport>` | 🟢 | Low (olumlu) |
+| 232 `data-i18n` düğümü + dil değiştirici — zengin TR/EN. | evaluate | 🟢 | Low (olumlu) |
+| Raster `img` yok (SVG/CSS) → alt boşluğu yok; landing ikon-kontrollerinde erişilebilir-ad boşluğu yok. | evaluate: imgsNoAlt=0, iconNoLabel=0 | 🟢 | Low (olumlu) |
+| **Landing dark-mode YOK (light-only)** — pazarlama sayfası için kabul edilebilir ama karar gerekir. | evaluate: hasDarkModeCSS=false | 🟢 | Medium (karar) |
+
+**Authenticated app (dashboard/boards/onboarding/modal/tablo/grafik) — canlı sweep YAPILMADI.**
+Gerekçe (rahatsız edici gerçek): app'in canlı görsel sweep'i **tam stack boot** ister (DB + `@kan/auth`); ayrıca DevTools viewport emülasyonu bu oturumda landing'de güvenilir çalışmadı (`innerWidth` 1440'ta kaldı) → piksel-doğru breakpoint ekran görüntüsü alınamadı. Aşama-1'in **kod-doğrulamalı** app bulguları geçerli: `PageHead.tsx:9` `maximum-scale=1` (zoom engeli), ikon-butonlarda `aria-label` eksik, karışık TR/EN msgid. Bu sweep çalışan bir instance'a (staging/local boot) karşı yapılmalı.
+
+**Breakpoint matrisi (360/390/büyük-mobil/tablet-portrait/tablet-landscape/küçük-laptop/desktop/geniş × light/dark × TR/EN):** landing için overflow dışında yapısal engel görülmedi; app için booted instance gerekiyor — BEKLİYOR.
 
 ## Not
 Kritik olmayan iyileştirmeler bu aşamada UYGULANMADI (yalnız audit). Onaylanan bulgular ayrı branch + ayrı PR'larda uygulanacak.
