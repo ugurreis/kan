@@ -908,7 +908,7 @@ section{position:relative}
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f4">Ekip performans analitiği</span></li>
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2.f5">Otomasyon: liste kurallarıyla etiket/atama</span></li>
         </ul>
-        <a id="ctaStandard" href="https://creem.io/product/prod_3BXDShfWhwzCEtrFUVvcFb" target="_blank" rel="noopener" class="btn btn-ghost" data-i18n="p2.btn">Standart'la başla</a>
+        <a id="ctaStandard" role="button" aria-disabled="true" class="btn btn-ghost" style="opacity:.6;pointer-events:none;cursor:default" data-i18n="p2.btn">Yakında</a>
       </div>
       <div class="plan pop" data-reveal>
         <span class="badge" data-i18n="p.badge">En popüler</span>
@@ -922,7 +922,7 @@ section{position:relative}
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2b.f3">Standart'ın tüm özellikleri</span></li>
           <li><span class="ok"><svg width="12" height="12" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6 9 17l-5-5"/></svg></span> <span data-i18n="p2b.f4">Öncelikli destek</span></li>
         </ul>
-        <a id="ctaPremium" href="https://creem.io/product/prod_48NrhOFXv5QBb6FyXSW7G9" target="_blank" rel="noopener" class="btn btn-primary" data-i18n="p2b.btn">Premium'la başla</a>
+        <a id="ctaPremium" role="button" aria-disabled="true" class="btn btn-primary" style="opacity:.6;pointer-events:none;cursor:default" data-i18n="p2b.btn">Yakında</a>
       </div>
       <div class="plan" data-reveal>
         <h3 data-i18n="p3.h">Kurumsal</h3>
@@ -1156,9 +1156,9 @@ section{position:relative}
     "p1.h":"Get started","p1.amt":"14 days<small> free</small>","p1.note":"No credit card","p1.desc":"For those who want to try — a ready demo environment.",
     "p1.f1":"Try every feature","p1.f2":"Templates & example cards","p1.f3":"No setup required","p1.btn":"Try the demo",
     "p2.h":"Standard","p2.desc":"Monthly. Unlimited boards and cards.",
-    "p2.f1":"Unlimited boards & cards","p2.f2":"Calendar view","p2.f3":"Roles, permissions, Webhook & API","p2.f4":"Team performance analytics","p2.f5":"Automation: list rules for labels/assignment","p2.btn":"Start with Standard",
+    "p2.f1":"Unlimited boards & cards","p2.f2":"Calendar view","p2.f3":"Roles, permissions, Webhook & API","p2.f4":"Team performance analytics","p2.f5":"Automation: list rules for labels/assignment","p2.btn":"Coming soon",
     "p2b.h":"Premium","p2b.desc":"Everything in Standard, plus Telegram and AI.",
-    "p2b.f1":"Voice tasks via Telegram","p2b.f2":"AI-generated card descriptions","p2b.f3":"All Standard features","p2b.f4":"Priority support","p2b.btn":"Start with Premium",
+    "p2b.f1":"Voice tasks via Telegram","p2b.f2":"AI-generated card descriptions","p2b.f3":"All Standard features","p2b.f4":"Priority support","p2b.btn":"Coming soon",
     "p3.h":"Enterprise","p3.amt":"Custom","p3.note":"Priced to your needs","p3.desc":"Everything in Premium, plus a deal shaped around your needs.",
     "p3.f1":"All Premium features","p3.f2":"Unlimited users, custom contract","p3.f3":"Priority support & onboarding consulting","p3.btn":"Get in touch",
     "bill.monthly":"Monthly","bill.yearly":"Yearly","bill.save":"save 20%",
@@ -1222,16 +1222,10 @@ section{position:relative}
   };
   function fmtTL(usd){ return "≈ ₺" + Math.round(usd*USDTRY).toLocaleString("tr-TR"); }
   function fmtUsd(n){ return (n % 1 === 0) ? String(n) : n.toFixed(2).replace(/0$/,""); }
-  var CREEM = {
-    monthly: {
-      std:  "https://creem.io/product/prod_5EgV8S8rAQ0iprEFUXsnfS",
-      prem: "https://creem.io/product/prod_351g0O7RRGz6WrxTmP4fxM"
-    },
-    yearly: {
-      std:  "https://creem.io/product/prod_3BXDShfWhwzCEtrFUVvcFb",
-      prem: "https://creem.io/product/prod_48NrhOFXv5QBb6FyXSW7G9"
-    }
-  };
+  // Billing CTA'ları geçici olarak devre dışı ("Yakında"). Canlı Creem checkout
+  // linkleri KALDIRILDI; ödeme akışı tetiklenmez. Yeniden etkinleştirmek ayrı,
+  // onaylı bir değişikliktir (bkz docs/runbooks/DEPLOY_BILLING.md §7).
+  var CREEM = { monthly: { std: "", prem: "" }, yearly: { std: "", prem: "" } };
   function renderPrices(){
     var en = (CUR === "en");
     var per = en ? " /mo" : " /ay";
@@ -1250,11 +1244,7 @@ section{position:relative}
     if(amtPrem) amtPrem.innerHTML = "$"+fmtUsd(p.prem)+"<small>"+per+"</small>"+tlPrem;
     var notePrem = document.getElementById("notePrem");
     if(notePrem) notePrem.textContent = noteTxt;
-    var links = CREEM[BILLING];
-    var cs = document.getElementById("ctaStandard");
-    var cp = document.getElementById("ctaPremium");
-    if(cs) cs.href = links.std;
-    if(cp) cp.href = links.prem;
+    // Billing CTA'ları devre dışı — CTA'lara href ATANMAZ (ödeme akışı tetiklenmez).
   }
 
   function setBilling(period){
