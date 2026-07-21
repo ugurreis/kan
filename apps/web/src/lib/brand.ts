@@ -15,12 +15,10 @@ export const BRAND_CONTACT_EMAIL = "destek@nexovias.com";
 // Pazarlama/ana alan adı (hukuk metinlerinde ve footer'da geçer).
 export const BRAND_DOMAIN = "nexovias.com";
 
-// Kaynak/lisans/self-host bağlantıları — müşteri-yüzünde ESKİ "Kan" markası GÖSTERİLMEZ.
-// AGPL-3.0 uyumu [Muhtemel]: ağ üzerinden servis edilen değiştirilmiş türev, kullanıcıya
-// KENDİ değiştirilmiş kaynağını sunmalıdır. Nexora'nın public kaynak reposu belli olunca
-// BRAND_SOURCE_URL ve BRAND_SELF_HOST_DOCS_URL gerçek URL ile güncellenmeli.
-// TODO(branding): gerçek public repo / self-host docs URL'lerini bağla.
-export const BRAND_SOURCE_URL = `https://${BRAND_DOMAIN}`; // TODO: Nexora public kaynak repo URL'si
-export const BRAND_SELF_HOST_DOCS_URL = `https://${BRAND_DOMAIN}`; // TODO: Nexora self-host docs URL'si
-// AGPL-3.0 kanonik metni (marka-nötr; doğru lisans).
-export const BRAND_LICENSE_URL = "https://www.gnu.org/licenses/agpl-3.0.html";
+// Kaynak/lisans/self-host bağlantıları — Nexora'nın kendi public reposu (github.com/ugurreis/nexora).
+// AGPL-3.0 uyumu: ağ üzerinden servis edilen değiştirilmiş türev, kullanıcıya KENDİ değiştirilmiş
+// kaynağını sunar; bu link o kaynağa (public fork) işaret eder. Eski "Kan" markası gösterilmez.
+export const BRAND_SOURCE_URL = "https://github.com/ugurreis/nexora";
+export const BRAND_SELF_HOST_DOCS_URL = "https://github.com/ugurreis/nexora";
+export const BRAND_LICENSE_URL =
+  "https://github.com/ugurreis/nexora?tab=AGPL-3.0-1-ov-file#readme";
